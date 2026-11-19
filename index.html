@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#c62828">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Farmaci">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Farmaci Emergenza – Dosi e Diluizioni</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#5d6773;--ac:#c62828;--bd:#dde1e6;--pe:#1565c0;--wa:#fff4e5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171a;--card:#1e2328;--tx:#e8eaed;--mu:#9aa4af;--ac:#ef5350;--bd:#333b43;--pe:#64b5f6;--wa:#3a2e1a}}
+:root[data-theme="dark"]{--bg:#14171a;--card:#1e2328;--tx:#e8eaed;--mu:#9aa4af;--ac:#ef5350;--bd:#333b43;--pe:#64b5f6;--wa:#3a2e1a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:10px}
+.hd{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:5}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,input,select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px 10px}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.pe.on{background:var(--pe);border-color:var(--pe)}
+input[type=number]{width:90px}
+#q{flex:1;min-width:140px}
+.warn{background:var(--wa);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:13px;margin:8px 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;margin:8px 0;padding:10px 12px}
+.card h3{margin:0 0 4px;font-size:16px}
+.tag{font-size:11px;color:var(--mu)}
+.card ul{margin:4px 0 0;padding-left:18px}
+.res{background:rgba(21,101,192,.1);border-left:3px solid var(--pe);padding:6px 8px;margin:6px 0;border-radius:4px}
+.res b{color:var(--pe)}
+.sm{font-size:12.5px;color:var(--mu)}
+table{border-collapse:collapse;width:100%;margin-top:6px}td,th{border:1px solid var(--bd);padding:4px 6px;text-align:right}th{text-align:center}
+.tabs button{flex:1;padding:8px 4px}
+.st{margin:2px 0 0;padding-left:0;list-style:none;font-size:13.5px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px}
+.ch{font-size:12px;padding:3px 7px}
+.cat{margin:14px 0 2px;font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.nd{border-left:4px solid var(--pe)}.nd.end{border-left-color:#2e7d32}.nd.stop{border-left-color:var(--ac)}
+button:disabled{opacity:.4}
+.gwrap{overflow-x:auto;border:1px solid var(--bd);border-radius:12px;background:var(--bg);padding:12px 8px 16px;margin-top:10px}
+.tree{display:block;width:auto}
+.tree ul{display:block;margin:0;padding:0;list-style:none}
+.tree ul ul{margin-left:0}
+.tree li{position:relative;display:block;padding:12px 0 0 12px;list-style:none;margin:0}
+.tree>ul>li{padding:0}
+.tree ul ul>li::before{content:'';position:absolute;left:0;top:30px;width:12px;border-top:2px solid #8a94a0}
+.tree ul ul>li::after{content:'';position:absolute;left:0;top:0;bottom:0;border-left:2px solid #8a94a0}
+.tree ul ul>li:last-child::after{bottom:auto;height:31px}
+.dp{display:none}
+.lb{display:inline-block;max-width:100%;margin:0 0 5px;text-align:left;font-size:11px;line-height:1.25;background:var(--bg);color:var(--mu);border:1px solid #8a94a0;border-radius:10px;padding:2px 8px;position:relative;z-index:2}
+.gnb{position:relative;width:100%;box-sizing:border-box;background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--pe);border-radius:10px;padding:8px 9px;box-shadow:0 1px 4px rgba(0,0,0,.12);font-size:12.5px;line-height:1.35;text-align:left}
+.gnb.dec{border-left-color:#f9a825}.gnb.end{border-left-color:#2e7d32}.gnb.stop{border-left-color:var(--ac)}
+.gh{display:flex;gap:6px;align-items:flex-start;cursor:pointer}
+.gnum{flex:none;min-width:18px;height:18px;border-radius:9px;background:var(--pe);color:#fff;font-size:11px;font-weight:700;text-align:center;line-height:18px}
+.gnb.dec .gnum{background:#f9a825;color:#222}.gnb.end .gnum{background:#2e7d32}.gnb.stop .gnum{background:var(--ac)}
+.gt{flex:1;font-weight:600;font-size:13px}.gx{flex:none;color:var(--mu);font-size:11px}
+.gnb.open .gx{transform:rotate(180deg)}
+.gbody{margin:6px 0 0;font-size:12px;font-weight:400}.bl{display:none;margin:3px 0;padding-left:11px;position:relative}.bl::before{content:'•';position:absolute;left:1px;color:var(--mu)}.bl.k{display:block;font-weight:600;color:var(--tx)}.gnb.open .bl{display:block}.gnb.open .bl:not(.k){font-weight:400;color:var(--mu)}.gnb.nohid .gx{display:none}
+.gchips{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+.chip{font-size:11px;line-height:1.3;color:var(--mu);background:rgba(138,148,160,.14);border-radius:6px;padding:3px 6px;cursor:pointer}
+.chip b{color:var(--tx);font-weight:600}.chip.ext{background:rgba(21,101,192,.12)}
+.flash{animation:fl 1.4s}@keyframes fl{0%,60%{box-shadow:0 0 0 5px rgba(249,168,37,.7)}100%{box-shadow:0 1px 4px rgba(0,0,0,.12)}}
+
+</style></head><body><div class="w">
+<div class="hd">
+<div class="row tabs"><button id="t1" class="on">Farmaci</button><button id="t2">Infusioni</button><button id="t3">Parametri</button><button id="t4">Algoritmi</button></div>
+<div class="row" id="mr" style="margin-top:8px">
+<button id="mA" class="on">Adulto</button><button id="mP" class="pe">Pediatrico</button>
+<label id="wl" style="display:none">Peso <input id="w" type="number" min="1" max="150" step="0.1" placeholder="kg"> kg</label>
+<input id="q" placeholder="Cerca farmaco…"></div>
+<div class="row" id="ar" style="display:none;margin-top:8px"><label>Età <input id="ag" type="number" min="0" max="120" step="any" placeholder="età"></label><select id="au"><option value="g">giorni</option><option value="m">mesi</option><option value="a" selected>anni</option></select></div></div>
+<div id="out"></div><div class="sm" style="margin:18px 0 10px;text-align:center;font-size:11px;color:var(--mu)">Strumento di consultazione a supporto: non sostituisce protocolli, linee guida e giudizio clinico; verificare sempre dosi e diluizioni sulle fonti ufficiali.<br>Versione <b id="ver">1.0</b> · 19/11/2026 · <span id="offs">verifica offline…</span></div>
+</div>
+<script>
+const D=[
+{n:'Adrenalina 1 mg/ml (1 ml)',a:['Arresto: 1 mg EV/IO (puro, oppure 1 fiala + NaCl fino a 10 ml = 0,1 mg/ml) + flush 20 ml. Non defibrillabile: subito; defibrillabile: dopo 3° shock; poi ogni 3–5 min','Anafilassi: 0,5 mg IM (0,5 ml puri) in coscia, ripetibile ogni 5 min','Bolo ipotensione/post-ROSC: 1 fiala + NaCl fino a 10 ml (100 mcg/ml) somministra 10–50 mcg (0,1–0,5 ml) titrati','Aerosol (stridore/edema laringeo): 5 mg (5 ml puri) nebulizzati','Infusione continua: vedi tab Infusioni (0,05–0,5 mcg/kg/min)'],
+p:[{l:'Arresto EV/IO ogni 3–5 min',k:.01,u:'mg',mx:1,c:.1,d:'1 fiala + NaCl fino a 10 ml = 0,1 mg/ml (1:10.000)'},{l:'Anafilassi IM',k:.01,u:'mg',mx:.5,c:1,d:'puro 1 mg/ml'},{l:'Aerosol croup/stridore',k:.4,u:'ml',mx:5,c:1,d:'puro 1 mg/ml, in 2–3 ml NaCl'},{l:'Bolo ipotensione (tit.)',k:1,k2:2,u:'mcg',c:10,d:'1 fiala + NaCl fino a 10 ml; poi 1 ml di questa + NaCl fino a 10 ml = 10 mcg/ml'}]},
+{n:'Noradrenalina 2 mg/1 ml (fiala)',a:['Bolo (ipotensione severa/peri-intubazione): 1 fiala (2 mg/1 ml) + NaCl fino a 20 ml = 100 mcg/ml somministra 5–10 mcg (0,05–0,1 ml; più facile da misurare: 1 ml di questa + NaCl fino a 10 ml = 10 mcg/ml somministra 0,5–1 ml), ripetibile','Infusione continua: siringa 20 ml con 2 mg = 100 mcg/ml, vedi tab Infusioni (0,05–0,5 mcg/kg/min, titolare a PAM ≥65); via venosa centrale se possibile'],
+p:[{l:'Bolo (non standard, solo peri-arresto/medico)',k:.05,k2:.1,u:'mcg',c:100,d:'1 fiala + NaCl fino a 20 ml = 100 mcg/ml'},{l:'Infusione 0,05–1 mcg/kg/min',x:'Usare tab Infusioni'}]},
+{n:'Nitroglicerina 5 mg/1,5 ml (fiala)',a:['Bolo EV: 1 fiala (5 mg/1,5 ml) + NaCl fino a 5 ml = 1 mg/ml; 0,5–1 mg (0,5–1 ml) in 1–2 min, ripetibile ogni 3–5 min (edema polmonare ipertensivo/SCA)','Infusione: iniziare 10–20 mcg/min, +5–10 mcg/min ogni 5 min (max 200) – tab Infusioni'],p:[{l:'Uso pediatrico',x:'Non di routine in emergenza. Se prescritto: infusione 0,25–0,5 mcg/kg/min (max 5)'}]},
+{n:'Natispray (nitroglicerina spray 0,3 mg/dose)',a:['Angina/SCA/edema polmonare: 1–2 spruzzi (0,3–0,6 mg) sublinguali, ripetibili ogni 5 min (max 3 dosi). Solo se PAS ≥100; non in IM ventricolo destro o con PDE5-inibitori'],p:[{l:'Uso pediatrico',x:'Non indicato in emergenza pediatrica'}]},
+{n:'Adenosina 6 mg/2 ml',a:['6 mg bolo rapidissimo EV (vena grossa) + flush 20 ml; se inefficace 12 mg, poi 18 mg'],p:[{l:'1ª dose rapida + flush',k:.1,u:'mg',mx:6,c:.6,d:'1 fiala (6 mg) + NaCl fino a 10 ml = 0,6 mg/ml'},{l:'2ª dose',k:.2,u:'mg',mx:12,c:.6,d:'come sopra'}]},
+{n:'Amiodarone 150 mg/3 ml',a:['Arresto FV/TV: 300 mg (2 fiale pure = 6 ml) EV/IO in bolo dopo 3° shock, poi 150 mg (1 fiala pura = 3 ml) dopo 5°; flush NaCl 20 ml','Aritmia con polso stabile: 300 mg (2 fiale) direttamente nella sacca G5% da 250 ml (1,2 mg/ml) in 20–60 min, poi 900 mg/24 h. Non in NaCl per infusione prolungata'],p:[{l:'Arresto FV/TV (max 3 dosi)',k:5,u:'mg',mx:300,c:50,d:'puro 50 mg/ml (fiala 150 mg/3 ml), in bolo + flush'}]},
+{n:'Atropina 1 mg/1 ml (fiala)',a:['Bradicardia: 0,5 mg EV, ripetibile ogni 3–5 min (max 3 mg). Non nel BAV di 2° grado tipo 2 e di 3° grado','Arresto: non più raccomandata'],p:[{l:'Bradicardia vagale',k:.02,u:'mg',mx:.5,c:.1,d:'1 fiala + NaCl fino a 10 ml = 0,1 mg/ml'}]},
+{n:'Lidocaina 2% 200 mg/10 ml',a:['FV/TV refrattaria (alternativa ad amiodarone): 100 mg (1–1,5 mg/kg) EV, poi 50 mg; max 3 mg/kg'],p:[{l:'FV/TV',k:1,u:'mg',mx:100,c:20,d:'puro 20 mg/ml'}]},
+{n:'Calcio cloruro 1 g/10 ml (10%)',a:['Iperkaliemia/intossicazione Ca-antag./Mg: 10 ml (1 g) EV in 2–5 min, ripetibile. Meglio vena centrale/grossa; diluire 1:1 se periferica'],p:[{l:'EV lento',k:20,u:'mg',mx:1000,c:100,d:'puro 100 mg/ml (0,2 ml/kg)'}]},
+{n:'Bicarbonato di sodio 8,4% 10 mEq/10 ml (1 mEq/ml)',a:['Iperkaliemia/intossic. antidepressivi triciclici/arresto prolungato: 50 mEq (50 ml) EV lento; non miscelare con calcio'],p:[{l:'EV lento',k:1,u:'mEq',mx:50,c:1,d:'puro (1 ml/kg); diluire 1:1 in neonati/lattanti'}]},
+{n:'Magnesio solfato 1 g/10 ml',a:['Torsione di punta / asma grave: 2 g = 2 fiale (20 ml) nella sacca NaCl 0,9% da 250 ml, in 10–20 min (arresto: 2 g = 2 fiale pure in 1–2 min)'],p:[{l:'Asma/torsione (20 min)',k:25,k2:50,u:'mg',mx:2000,c:50,d:'1 fiala (1 g/10 ml) + NaCl fino a 20 ml = 50 mg/ml; se serve >20 ml (>1 g) preparare una 2ª siringa'}]},
+{n:'Glucosata 33% 10 ml (0,33 g/ml)',a:['Ipoglicemia: 10–20 g (30–60 ml), diluire 1:2 in NaCl, titolare sulla glicemia (poi G10% se disponibile)'],p:[{l:'Ipoglicemia (0,2 g/kg)',k:.2,u:'g',mx:20,c:.1,d:'3 ml G33% + NaCl fino a 10 ml ≈ G10% (0,1 g/ml)'}]},
+{n:'Glucagone 1 mg',a:['Ipoglicemia senza accesso EV: 1 mg IM/SC'],p:[{l:'IM/SC',f:w=>w<25?.5:1,u:'mg',c:1,d:'1 mg ricostituito in 1 ml; <25 kg: 0,5 mg'}]},
+{n:'Naloxone 0,4 mg/1 ml (fiala)',a:['Depressione respiratoria da oppioidi: 0,04–0,1 mg EV ogni 1–2 min titrando (1 fiala 0,4 mg/1 ml + NaCl fino a 10 ml = 0,04 mg/ml); IM 0,4 mg; max ~2 mg poi rivalutare'],p:[{l:'EV/IM, ripetibile',k:.01,u:'mg',mx:.4,c:.04,d:'1 fiala + NaCl fino a 10 ml = 0,04 mg/ml'}]},
+{n:'Flumazenil 0,5 mg/5 ml',a:['0,2 mg EV in 15 s, poi 0,1 mg/min fino a risposta (max 1 mg). Rischio convulsioni (benzodiazepine croniche, TCA)'],p:[{l:'Ripetibile (max 0,05 mg/kg o 1 mg)',k:.01,u:'mg',mx:.2,c:.1,d:'puro 0,1 mg/ml'}]},
+{n:'Salbutamolo 0,375% + ipratropio 0,075% gocce',a:['Broncospasmo grave: 0,67 ml (13 gocce; ≈2,5 mg salbutamolo + 0,5 mg ipratropio, assunte 3,75 + 0,75 mg/ml) in 2–3 ml NaCl nebulizzati con O2; ripetibile ogni 20 min fino a 3 dosi, poi rivalutare','Verificare sulla scheda tecnica la conversione gocce/ml del flacone'],p:[{l:'Aerosol (volume di soluzione)',f:w=>w<30?.33:.67,u:'ml',c:1,g:20,d:'in 2–3 ml NaCl; <30 kg 0,33 ml (salbutamolo 1,25 mg + ipratropio 0,25 mg), ≥30 kg 0,67 ml (2,5 + 0,5 mg). Ripetibile ogni 20 min fino a 3 dosi. Confermare con protocollo'}]},
+{n:'Beclometasone 800 mcg/2 ml (fiala per aerosol)',a:['800 mcg = 1 fiala (2 ml) nebulizzata, senza diluire (adiuvante in broncospasmo/edema laringeo)'],p:[{l:'Aerosol',x:'400–800 mcg = 1–2 ml (400 mcg/ml) nebulizzati (non basato sul peso)'}]},
+{n:'Metilprednisolone 125 mg',a:['125 mg EV/IM (asma, anafilassi, BPCO, laringospasmo)'],p:[{l:'EV/IM',k:1,k2:2,u:'mg',mx:125,c:62.5,d:'ricostituita 125 mg/2 ml'}]},
+{n:'Clorfenamina (Trimeton) 10 mg/1 ml (fiala)',a:['10 mg EV lento/IM (adiuvante nell’anafilassi, mai prima dell’adrenalina)'],p:[{l:'EV lento/IM',f:w=>w<20?2.5:w<35?5:10,u:'mg',c:1,d:'1 fiala + NaCl fino a 10 ml = 1 mg/ml; fasce: <6 aa 2,5 mg, 6–12 aa 5 mg, >12 aa 10 mg'}]},
+{n:'Acido tranexamico 500 mg/5 ml',a:['Trauma emorragico <3 h: 1 g = 2 fiale in 10 min; poi 1 g in 8 h'],p:[{l:'Bolo in 10 min',k:15,u:'mg',mx:1000,c:50,d:'2 fiale (1 g/10 ml) + NaCl fino a 20 ml = 50 mg/ml, in 10 min; poi 2 mg/kg/h'}]},
+{n:'Acetilsalicilato di lisina 500 mg',a:['SCA: 250–500 mg EV (equivale ASA 150–300 mg), se impossibile via orale'],p:[{l:'Uso pediatrico',x:'Non indicato in emergenza'}]},
+{n:'Eparina 5000 UI/ml',a:['SCA: 60 UI/kg (max 4000 UI) EV; STEMI/PCI 70–100 UI/kg; EP 80 UI/kg'],p:[{l:'Uso pediatrico',x:'Non di routine in emergenza'}]},
+{n:'Furosemide 20 mg/2 ml',a:['Edema polmonare: 20–40 mg EV lento (≤4 mg/min)'],p:[{l:'EV lento',k:1,u:'mg',mx:40,c:10,d:'puro 10 mg/ml'}]},
+{n:'Metoprololo 5 mg/5 ml',a:['2,5–5 mg EV in 2 min, ripetibile ogni 5 min (max 15 mg). Non se bradicardia, blocco AV, shock'],p:[{l:'Uso pediatrico',x:'Non di routine'}]},
+{n:'Urapidil 50 mg/10 ml',a:['Crisi ipertensiva: 10–25 mg EV lento (in 20 s–5 min), ripetibile dopo 5 min; infusione 1 fiala (50 mg) + NaCl fino a 20 ml (2,5 mg/ml): 9–30 mg/h (tab Infusioni)'],p:[{l:'Uso pediatrico',x:'Non di routine'}]},
+{n:'Ketorolac 30 mg/1 ml (fiala)',a:['30 mg EV lento/IM (15 mg se >65 aa o <50 kg). Non in sospetta emorragia, IRC, ulcera'],p:[{l:'EV lento',k:.5,u:'mg',mx:15,c:3,d:'1 fiala + NaCl fino a 10 ml = 3 mg/ml'}]},
+{n:'Metoclopramide 10 mg/2 ml',a:['10 mg EV lento (≥3 min) o IM'],p:[{l:'EV lento (>1 anno)',k:.1,k2:.15,u:'mg',mx:10,c:5,d:'puro 5 mg/ml'}]},
+{n:'Propofol 1% 200 mg/20 ml (10 mg/ml)',a:['Induzione: 1–2 mg/kg EV (ridurre in instabili/anziani); sedazione 0,5 mg/kg titrato'],p:[{l:'Induzione',k:2,k2:3,u:'mg',c:10,d:'fiala pura 10 mg/ml'}]},
+{n:'Midazolam 5 mg/1 ml e 15 mg/3 ml (5 mg/ml)',a:['Convulsioni: 10 mg IM (>40 kg) o 2–5 mg EV titrati; sedazione 1–2,5 mg EV'],p:[{l:'Convulsioni EV',k:.1,u:'mg',mx:10,c:1,d:'1 ml (5 mg) + NaCl fino a 5 ml = 1 mg/ml'},{l:'Convulsioni IM',k:.2,u:'mg',mx:10,c:5,d:'puro 5 mg/ml (fiala 5 mg/1 ml o 15 mg/3 ml)'}]},
+{n:'Ketamina 100 mg/2 ml (50 mg/ml)',a:['Analgesia: 0,1–0,3 mg/kg EV; induzione: 1–2 mg/kg EV'],p:[{l:'Analgesia EV',k:.2,u:'mg',c:10,d:'1 fiala + NaCl fino a 10 ml = 10 mg/ml'},{l:'Induzione EV',k:1.5,k2:2,u:'mg',c:50,d:'fiala pura 50 mg/ml'},{l:'IM',k:4,u:'mg',c:50,d:'fiala pura 50 mg/ml'}]},
+{n:'Fentanyl 0,1 mg/2 ml (100 mcg/2 ml = 50 mcg/ml)',a:['Analgesia: 25–100 mcg EV titrati (0,5–1 mcg/kg); RSI 1–3 mcg/kg'],p:[{l:'Analgesia EV',k:.5,k2:1,u:'mcg',mx:100,c:10,d:'1 fiala + NaCl fino a 10 ml = 10 mcg/ml'},{l:'Intranasale',k:1.5,u:'mcg',c:50,d:'fiala pura 50 mcg/ml'}]},
+{n:'Morfina 10 mg/1 ml (fiala)',a:['2–5 mg EV titrati ogni 5 min (1 fiala 10 mg/1 ml + NaCl fino a 10 ml = 1 mg/ml)'],p:[{l:'EV lento',k:.05,k2:.1,u:'mg',mx:5,c:1,d:'1 fiala + NaCl fino a 10 ml = 1 mg/ml'}]},
+{n:'Succinilcolina 100 mg/2 ml (50 mg/ml)',a:['RSI: 1–1,5 mg/kg EV (~100 mg). Controindicata in iperkaliemia, ustioni/rabdomiolisi, ipertermia maligna'],p:[{l:'RSI',k:2,u:'mg',c:10,d:'1 ml (50 mg) + NaCl fino a 5 ml = 10 mg/ml'}]},
+{n:'Rocuronio 50 mg/5 ml (10 mg/ml)',a:['RSI: 1–1,2 mg/kg EV'],p:[{l:'RSI',k:1,k2:1.2,u:'mg',c:10,d:'puro 10 mg/ml'}]},
+{n:'Glucosata 5% 250 ml (sacca) (0,05 g/ml)',a:['Diluente per amiodarone in infusione (non in NaCl): 300 mg (2 fiale) direttamente nella sacca da 250 ml, in 20–60 min; in arresto l’amiodarone si fa puro','Non adatta a correggere ipoglicemia (usare G33%)'],p:[{l:'Diluente',x:'Amiodarone in arresto: puro (vedi scheda amiodarone)'}]},
+{n:'Scopolamina (butilbromuro) 20 mg/1 ml',a:['Spasmi/coliche addominali o renali: 20 mg EV lenta (1 fiala + NaCl fino a 10 ml = 2 mg/ml, in 1–2 min) o IM; ripetibile dopo 30 min, max 100 mg/die','Controindicata in glaucoma ad angolo chiuso, tachiaritmie, ritenzione urinaria, miastenia, megacolon'],p:[{l:'Uso pediatrico',x:'Non di routine in emergenza: dose da prescrizione medica (non calcolata qui)'}]},
+{n:'Labetalolo 100 mg/20 ml (5 mg/ml)',a:['Crisi ipertensiva: 20 mg (4 ml, puro) EV lenta in 2 min; ripetibile con 40–80 mg ogni 10 min, max 300 mg totali. Monitorare PA e FC','Controindicato in bradicardia, blocco AV, asma/BPCO, scompenso acuto, shock'],p:[{l:'Uso pediatrico',x:'Non di routine in emergenza: dose da prescrizione medica (non calcolata qui)'}]},
+{n:'Idrocortisone 100 mg (assunta ricostituzione in 2 ml = 50 mg/ml)',a:['Insufficienza surrenalica acuta: 100 mg EV lenta o IM, poi 200 mg/24 h','Asma grave/anafilassi (adiuvante, mai prima dell adrenalina): 100–200 mg EV lenta'],p:[{l:'EV lenta/IM (asma, crisi surrenalica)',k:4,u:'mg',mx:100,c:50,d:'1 flacone 100 mg + 2 ml di solvente = 50 mg/ml'}]},
+{n:'Dopamina 200 mg/5 ml (40 mg/ml)',a:['Ipotensione/shock, bradicardia sintomatica refrattaria ad atropina: infusione 2–20 mcg/kg/min (5–20 per effetto inotropo/cronotropo), titrare su PA e FC. Preparazione: 2 ml di fiala (80 mg) + NaCl fino a 20 ml = 4 mg/ml. Vedi tab Infusioni','Preferire via venosa centrale o grossa vena (rischio necrosi da stravaso). Non miscelare con bicarbonato'],p:[{l:'Infusione',x:'2–20 mcg/kg/min: usare tab Infusioni con il peso inserito (concentrazione 4 mg/ml, valutare diluizione maggiore nei piccoli)'}]},
+{n:'Ossitocina 5 UI/1 ml (fiala)',a:['Emorragia post-partum (dopo espulsione del feto): 10 UI IM, oppure 5 UI EV lenta (1 fiala + NaCl fino a 10 ml, in 1–2 min; mai bolo rapido: ipotensione/tachicardia)','Mantenimento: 20–40 UI in 500–1000 ml di cristalloide a 125–250 ml/h, titolare sul tono uterino. Massaggio uterino in parallelo','Non usare prima dell espulsione del feto'],p:[{l:'Uso pediatrico',x:'Non pertinente'}]},
+{n:'Salbutamolo spray 100 mcg/dose',a:['Broncospasmo: 4–10 puff (400–1000 mcg) con distanziatore, 1 puff per volta con 4–6 respiri, ripetibili ogni 20 min per la prima ora'],p:[{l:'<20 kg (circa ≤5 anni)',x:'2–6 puff (200–600 mcg) con distanziatore, 1 puff per volta, ripetibili ogni 20 min'},{l:'≥20 kg (circa >5 anni)',x:'4–10 puff (400–1000 mcg) con distanziatore, 1 puff per volta, ripetibili ogni 20 min'}]},
+{n:'Salbutamolo gocce 5 mg/ml',a:['Broncospasmo: 2,5–5 mg (0,5–1 ml, 10–20 gocce) in 2–3 ml NaCl nebulizzati con O2, ripetibili ogni 20 min per la prima ora'],p:[{l:'Aerosol (<20 kg circa ≤5 anni: 2,5 mg; ≥20 kg: 5 mg)',f:w=>w<20?2.5:5,u:'mg',c:5,g:20,d:'gocce pure 5 mg/ml in 2–3 ml NaCl'}]},
+{n:'Aloperidolo 2 mg/1 ml (fiala)',a:['Agitazione psicomotoria: 2–5 mg (1–2,5 ml, puri) IM; ripetibile dopo 30–60 min, max 20 mg/die complessivi','Anziani/fragili: 0,5–2 mg (0,25–1 ml) IM, minima dose efficace','EV: uso non registrato (off-label), rischio di QT lungo/torsione di punta; solo con monitor ECG, lenta, su indicazione medica','Controindicato/da evitare in QT lungo o farmaci che allungano il QT, cardiopatia o aritmie, ipokaliemia/ipomagnesemia, Parkinson o demenza a corpi di Lewy, intossicazione da alcol/depressione SNC, coma. Rischio di distonia acuta/EPS'],p:[{l:'Uso pediatrico',x:'Non di routine in emergenza: dose da prescrizione medica (non calcolata qui)'}]},
+{n:'Betametasone 4 mg/2 ml (fiala, 2 mg/ml)',a:['Adiuvante in anafilassi (mai prima dell’adrenalina), asma grave, edema laringeo, shock: dose usuale 1,5–4 mg EV lenta/IM, ripetibile secondo necessità','Non se ipersensibilità nota a bisolfiti/metabisolfiti (contiene sodio metabisolfito)'],p:[{l:'EV lenta/IM',k:.1,u:'mg',mx:4,c:.4,d:'1 fiala + NaCl fino a 10 ml = 0,4 mg/ml'}]},
+{n:'Paracetamolo 1 g/100 ml (flacone, 10 mg/ml)',a:['Dolore/febbre: 1 g EV in 15 min (adulto ≥50 kg), intervallo minimo 4 h, max 4 g/die. Se <50 kg: 15 mg/kg','Non in insufficienza epatica grave; cautela in epatopatia, malnutrizione, disidratazione'],p:[{l:'EV in 15 min',f:w=>Math.min(w<10?7.5*w:15*w,1000),u:'mg',c:10,d:'puro 10 mg/ml; fasce: <10 kg 7,5 mg/kg, ≥10 kg 15 mg/kg, max 1 g; max 60 mg/kg/die'}]}
+];
+const E=['<b>Arresto (1 mg):</b> 1 fiala pura = 1 ml EV/IO, poi flush 20 ml; ripeti ogni 3–5 min.<br><b>Anafilassi (0,5 mg):</b> 0,5 ml puri IM in coscia; ripeti dopo 5 min.<br><b>Bolo ipotensione (20 mcg):</b> prepara 1 fiala + NaCl fino a 10 ml (100 mcg/ml), somministra 0,2 ml; ripeti titrando (10–50 mcg = 0,1–0,5 ml).','<b>Prepara:</b> 1 fiala (2 mg/1 ml) + NaCl fino a 20 ml = 100 mcg/ml.<br><b>Bolo (10 mcg):</b> 0,1 ml; ripeti titrando sulla PA (5–10 mcg = 0,05–0,1 ml).<br><b>Infusione:</b> 0,1 mcg/kg/min × 70 kg = 7 mcg/min somministra 4,2 ml/h.','<b>Prepara:</b> 1 fiala (5 mg/1,5 ml) + NaCl fino a 5 ml = 1 mg/ml.<br><b>Bolo (1 mg):</b> 1 ml in 1–2 min; ripeti dopo 3–5 min se PAS ≥100 (range 0,5–1 mg = 0,5–1 ml).<br><b>Infusione</b> (preparazione a parte, siringa da 20 ml = 0,25 mg/ml): 20 mcg/min somministra 4,8 ml/h.','2 puff SL (0,6 mg), ripetibili ogni 5 min (max 3 dosi) se PAS ≥100.','<b>1ª dose (6 mg):</b> 1 fiala pura = 2 ml, bolo rapidissimo in vena grossa, subito flush 20 ml.<br><b>2ª dose (12 mg):</b> 4 ml (2 fiale), poi flush.<br><b>3ª dose (18 mg):</b> 6 ml (3 fiale), poi flush; se inefficace, rivaluta.','Arresto: 300 mg = 2 fiale pure (6 ml) in bolo EV/IO + flush; poi 150 mg = 1 fiala pura (3 ml). Aritmia con polso stabile: 300 mg = 2 fiale nella sacca G5% da 250 ml in 30 min = 500 ml/h.','<b>Prepara:</b> 1 fiala (1 mg/1 ml) + NaCl fino a 10 ml = 0,1 mg/ml.<br><b>Bolo (0,5 mg):</b> 5 ml EV; ripeti ogni 3–5 min (max 3 mg = 30 ml).','100 mg (≈1,5 mg/kg) = 5 ml EV; poi 50 mg = 2,5 ml.','1 g = 1 fiala (10 ml) EV in 2–5 min (diluire 1:1 se vena periferica).','50 mEq = 50 ml (5 fiale) EV lento, via dedicata.','2 g = 2 fiale (20 ml) aggiunte alla sacca NaCl 0,9% da 250 ml, in 15 min (≈1000 ml/h).','10 g = 3 fiale (30 ml) + 60 ml NaCl, EV lento; rivalutare glicemia a 10–15 min.','1 mg = 1 fiala IM/SC, senza diluire.','<b>Prepara:</b> 1 fiala (0,4 mg/1 ml) + NaCl fino a 10 ml = 0,04 mg/ml.<br><b>Bolo (0,1 mg):</b> 2,5 ml EV; ripeti ogni 1–2 min fino a risposta.','0,2 mg = 2 ml puri in 15 s; poi 0,1 mg = 1 ml/min fino a risposta (max 1 mg = 10 ml).','13 gocce (0,67 ml, ≈2,5 mg salbutamolo + 0,5 mg ipratropio) in 2–3 ml NaCl, nebulizzati; ripetibile ogni 20 min fino a 3 dosi.','1 fiala 800 mcg/2 ml (2 ml) nebulizzata, senza diluire.','125 mg = 1 fiala (2 ml di solvente) EV lento.','10 mg = 1 fiala (1 ml, 10 mg/ml), EV lenta in ≥1 min (eventualmente diluita con NaCl fino a 10 ml).','1 g = 2 fiale (10 ml) in 10 min; poi 1 g in 8 h.','500 mg = 1 fiala EV.','60 UI/kg = 4200 somministra max 4000 UI = 0,8 ml EV in bolo.','40 mg = 2 fiale (4 ml) EV lento (≤4 mg/min, ≥10 min).','5 mg = 1 fiala (5 ml) EV in 2 min; ripetibile fino a 15 mg.','Bolo: 25 mg = 5 ml EV lento. Infusione 1 fiala (50 mg) + NaCl fino a 20 ml (2,5 mg/ml): 15 mg/h = 6 ml/h.','30 mg = 1 fiala (1 ml) + NaCl fino a 10 ml (3 mg/ml), EV lenta in ≥15 s; oppure 1 fiala pura IM.','10 mg = 1 fiala (2 ml) EV lento in ≥3 min.','1,5 mg/kg = 105 mg = 10,5 ml (10 mg/ml, puro), da 1 fiala da 20 ml; EV a boli titolati.','Convulsioni: 10 mg = 2 ml puri IM (2 fiale da 5 mg/1 ml, o 2 ml dalla fiala 15 mg/3 ml). EV: 3 mg = 3 ml da 1 mg/ml (1 ml + NaCl fino a 5 ml).','Analgesia 0,2 mg/kg = 14 mg: 1 fiala (100 mg/2 ml) + NaCl fino a 10 ml (10 mg/ml) somministra 1,4 ml. Induzione 1,5 mg/kg = 105 mg = 2,1 ml di fiala pura (50 mg/ml).','<b>Prepara:</b> 1 fiala (100 mcg/2 ml) + NaCl fino a 10 ml = 10 mcg/ml.<br><b>Bolo (50 mcg):</b> 5 ml EV lento (≈0,7 mcg/kg); ripeti titrando.','<b>Prepara:</b> 1 fiala (10 mg/1 ml) + NaCl fino a 10 ml = 1 mg/ml.<br><b>Bolo (3 mg):</b> 3 ml EV lento; ripeti ogni 5 min titrando.','1,5 mg/kg = 105 mg = 2,1 ml puri (50 mg/ml), cioè 2 fiale; oppure 10,5 ml dopo diluizione 1 ml + NaCl fino a 5 ml (10 mg/ml).','1,2 mg/kg = 84 mg = 8,4 ml puri (10 mg/ml).','Amiodarone con polso stabile: 2 fiale (300 mg) direttamente nella sacca G5% da 250 ml (1,2 mg/ml). In arresto l’amiodarone si fa puro.','20 mg = 1 fiala (1 ml) + NaCl fino a 10 ml (2 mg/ml), EV lenta in 1–2 min; oppure 1 fiala pura IM.','20 mg = 4 ml (5 mg/ml, puro) EV lenta in 2 min; dopo 10 min ripetibile 40 mg = 8 ml se PA ancora elevata.','100 mg = 1 flacone ricostituito in 2 ml (50 mg/ml), EV lenta in 1–2 min o IM.','Siringa 20 ml: 2 ml di fiala (80 mg) + NaCl fino a 20 ml = 4 mg/ml. 5 mcg/kg/min = 350 mcg/min somministra 5,3 ml/h (10 mcg/kg/min somministra 10,5 ml/h).','10 UI IM = 2 ml puri; oppure 5 UI = 1 fiala (1 ml) + NaCl fino a 10 ml, EV lenta in 1–2 min. Mantenimento: 20 UI = 4 ml in sacca da 250 ml (G5% o NaCl), titolare sul tono uterino.','6 puff (600 mcg) con distanziatore, 1 puff per volta con 4–6 respiri; ripetibile ogni 20 min.','5 mg = 20 gocce (1 ml) in 2–3 ml NaCl, nebulizzati con O2; ripetibile ogni 20 min.','5 mg = 2,5 ml puri (2,5 fiale da 2 mg/1 ml) IM, siringa da 5 ml. Ripetibile dopo 30–60 min, max 20 mg/die. Anziani/fragili: 1 mg = 0,5 ml IM.','4 mg = 1 fiala (2 ml) pura, EV lenta in 1–2 min oppure IM; ripetibile secondo necessità.','1 g = 1 flacone (100 ml) puro, EV in 15 min; ripetibile dopo almeno 4 h (max 4 g/die).'];
+const R=(l,a,b,u,c,d,g)=>({l,f:()=>a,f2:b==null?undefined:()=>b,u,c,d,g});const K=(l,k,k2,u,c,d,mx)=>({l,k,k2,u,c,d,mx});
+const AP=[['Acetilsalicilato',[R('EV (se os impossibile)',250,500,'mg',100,'1 fiala 500 mg in 5 ml (assunti 100 mg/ml)')]],
+['Acido tranexamico',[{l:'In 10 min',x:'1 g = 2 fiale (10 ml)'}]],
+['Adenosina',[R('1ª dose rapida + flush 20 ml',6,null,'mg',3,'puro 3 mg/ml'),R('2ª dose',12,null,'mg',3,'puro 3 mg/ml'),R('3ª dose',18,null,'mg',3,'puro 3 mg/ml')]],
+['Adrenalina',[R('Arresto EV/IO ogni 3–5 min',1,null,'mg',1,'puro 1 mg/ml'),R('Anafilassi IM',.5,null,'mg',1,'puro 1 mg/ml'),R('Bolo ipotensione (tit.)',10,50,'mcg',100,'1 fiala + NaCl fino a 10 ml = 100 mcg/ml'),R('Aerosol',5,null,'mg',1,'puro 1 mg/ml')]],
+['Amiodarone',[R('Arresto FV/TV (1ª dose, in bolo + flush)',300,null,'mg',50,'puro 50 mg/ml (2 fiale)'),R('Arresto (2ª dose)',150,null,'mg',50,'puro 50 mg/ml (1 fiala)'),R('Aritmia con polso stabile, in 20–60 min',300,null,'mg',1.2,'2 fiale (6 ml) aggiunte alla sacca G5% da 250 ml')]],
+['Atropina',[R('Bradicardia',.5,null,'mg',.1,'1 fiala + NaCl fino a 10 ml = 0,1 mg/ml')]],
+['Beclometasone',[R('Aerosol',800,null,'mcg',400,'fiala 800 mcg/2 ml pura')]],
+['Bicarbonato',[R('EV lenta',50,null,'mEq',1,'puro 1 mEq/ml (5 fiale)')]],
+['Calcio',[R('EV lenta 2–5 min',1000,null,'mg',100,'puro 100 mg/ml (1:1 se vena periferica)')]],
+['Clorfenamina',[R('EV lenta/IM',10,null,'mg',10,'puro 10 mg/ml')]],
+['Dopamina',[{l:'Infusione 2–20 mcg/kg/min',x:'vedi tab Infusioni (4 mg/ml)'}]],
+['Eparina',[K('SCA (60 UI/kg, max 4000)',60,null,'UI',5000,'puro 5000 UI/ml',4000)]],
+['Fentanyl',[R('Analgesia (tit.)',25,100,'mcg',10,'1 fiala + NaCl fino a 10 ml = 10 mcg/ml')]],
+['Flumazenil',[R('1ª dose in 15 s',.2,null,'mg',.1,'puro 0,1 mg/ml'),R('Successive ogni min (max 1 mg)',.1,null,'mg',.1,'puro')]],
+['Furosemide',[R('EV lenta',20,40,'mg',10,'puro 10 mg/ml')]],
+['Glucagone',[R('IM/SC',1,null,'mg',1,'1 mg in 1 ml')]],
+['Glucosata 33%',[R('Ipoglicemia (tit.)',10,20,'g',.33,'33% puro (1:2 con NaCl per EV)')]],
+['Glucosata 5%',[{l:'Diluente',x:'amiodarone con polso stabile: sacca da 250 ml (infusione); in arresto puro'}]],
+['Idrocortisone',[R('EV lenta/IM',100,200,'mg',50,'100 mg + 2 ml solvente = 50 mg/ml')]],
+['Ketamina',[K('Analgesia EV',.1,.3,'mg',10,'1 fiala + NaCl fino a 10 ml = 10 mg/ml'),K('Induzione EV',1,2,'mg',50,'fiala pura 50 mg/ml')]],
+['Ketorolac',[R('EV lenta/IM (15 mg se >65 aa o <50 kg)',30,null,'mg',3,'1 fiala + NaCl fino a 10 ml = 3 mg/ml')]],
+['Labetalolo',[R('1ª dose in 2 min',20,null,'mg',5,'puro 5 mg/ml'),R('Successive ogni 10 min (max 300 mg)',40,80,'mg',5,'puro 5 mg/ml')]],
+['Lidocaina',[R('FV/TV refrattaria',100,null,'mg',20,'puro 20 mg/ml'),R('2ª dose',50,null,'mg',20,'puro 20 mg/ml')]],
+['Magnesio',[R('Torsione/asma in 15 min',2000,null,'mg',8,'2 fiale (20 ml) aggiunte alla sacca NaCl 0,9% da 250 ml')]],
+['Metilprednisolone',[R('EV/IM',125,null,'mg',62.5,'ricostituita 125 mg/2 ml')]],
+['Metoclopramide',[R('EV lenta (≥3 min)',10,null,'mg',5,'puro 5 mg/ml')]],
+['Metoprololo',[R('EV in 2 min (max 15 mg)',2.5,5,'mg',1,'puro 1 mg/ml')]],
+['Midazolam',[R('Convulsioni IM',10,null,'mg',5,'puro 5 mg/ml'),R('EV (tit.)',2,5,'mg',1,'1 ml + NaCl fino a 5 ml = 1 mg/ml')]],
+['Morfina',[R('EV tit. ogni 5 min',2,5,'mg',1,'1 fiala + NaCl fino a 10 ml = 1 mg/ml')]],
+['Naloxone',[R('EV tit. ogni 1–2 min',.04,.1,'mg',.04,'1 fiala + NaCl fino a 10 ml = 0,04 mg/ml'),R('IM',.4,null,'mg',.4,'puro 0,4 mg/ml')]],
+['Natispray',[{l:'Sublinguale',x:'1–2 spruzzi (0,3–0,6 mg), ripetibili ogni 5 min (max 3 dosi)'}]],
+['Nitroglicerina',[R('Bolo EV (tit.)',.5,1,'mg',1,'1 fiala + NaCl fino a 5 ml = 1 mg/ml')]],
+['Noradrenalina',[R('Bolo (tit.)',5,10,'mcg',100,'1 fiala + NaCl fino a 20 ml = 100 mcg/ml')]],
+['Ossitocina',[R('IM',10,null,'UI',5,'puro 5 UI/ml'),R('EV lenta',5,null,'UI',.5,'1 fiala + NaCl fino a 10 ml = 0,5 UI/ml')]],
+['Propofol',[K('Induzione',1,2,'mg',10,'fiala pura 10 mg/ml')]],
+['Rocuronio',[K('RSI',1,1.2,'mg',10,'puro 10 mg/ml')]],
+['Salbutamolo 0,375',[R('Aerosol (volume di soluzione)',.67,null,'ml',1,'in 2–3 ml NaCl',20)]],
+['Salbutamolo gocce',[R('Aerosol',2.5,5,'mg',5,'gocce pure 5 mg/ml in 2–3 ml NaCl',20)]],
+['Salbutamolo spray',[{l:'Spray + distanziatore',x:'4–10 puff (400–1000 mcg), 1 puff per volta'}]],
+['Scopolamina',[R('EV lenta/IM',20,null,'mg',20,'puro 20 mg/ml (EV: 1 fiala + NaCl fino a 10 ml)')]],
+['Succinilcolina',[K('RSI',1,1.5,'mg',50,'fiala pura 50 mg/ml')]],
+['Urapidil',[R('EV lenta',10,25,'mg',5,'puro 5 mg/ml')]],
+['Aloperidolo 2 mg/1 ml (fiala',[R('IM (agitazione), ripetibile dopo 30–60 min',2,5,'mg',2,'fiala pura 2 mg/ml'),{l:'EV',x:'off-label: solo con monitor ECG, lenta, su indicazione medica'}]],
+['Betametasone',[R('EV lenta/IM',4,null,'mg',2,'puro 2 mg/ml')]],
+['Paracetamolo',[R('EV in 15 min (se <50 kg: 15 mg/kg)',1000,null,'mg',10,'flacone puro 10 mg/ml')]]];
+D.forEach((x,i)=>x.e=E[i]);D.sort((a,b)=>a.n.localeCompare(b.n,'it'));
+const $=id=>document.getElementById(id);let ped=false,tab=1;
+const f=x=>{x=+x;return String(x>=100?Math.round(x):x>=10?+x.toFixed(1):+x.toFixed(2)).replace('.',',')};
+function prep(d,vol){
+if(!d)return'';
+const sm=/\s[=≈]\s/.exec(d);
+const st=sm?d.slice(0,sm.index):d,tl=sm?d.slice(sm.index+sm[0].length):'';
+const re=/(?:^|;\s*)(?:poi\s+)?([^;]*?)\s\+\s(NaCl|G5%)\s+fino a\s+(\d+)\s*ml/g;let m,steps=[];
+while((m=re.exec(st))){steps.push(`Aspira <b>${m[1]}</b>`,`Portala a <b>${m[3]} ml</b>${m[2]==='NaCl'?'':' con '+m[2]}`)}
+if(!steps.length)return`<div class="sm" style="margin-top:4px">Preparazione:</div><ol class="st"><li>${/sacca/.test(d)?d.charAt(0).toUpperCase()+d.slice(1):'Aspira <b>'+vol+'</b>'}</li></ol>${/sacca/.test(d)?'':'<span class="sm">'+d+'</span>'}`;
+const semi=tl.indexOf(';'),res=semi>=0?tl.slice(0,semi):tl,note=semi>=0?tl.slice(semi+1).trim():'';
+return`<div class="sm" style="margin-top:4px">Preparazione:</div><ol class="st">${steps.map(s=>`<li>${s}</li>`).join('')}</ol><span class="sm">${sm&&sm[0].includes('≈')?'≈':'→'}</span> <b>${res}</b>${note?`<br><span class="sm">${note}</span>`:''}`}
+function line(p,w){if(p.x)return `<div class="sm">${p.l}: ${p.x}</div>`;
+let d=p.f?p.f(w):p.k*w,d2=p.f2?p.f2(w):p.k2?p.k2*w:null;
+if(p.mx){d=Math.min(d,p.mx);if(d2)d2=Math.min(d2,p.mx)}
+if(p.u==='ml'){var dose=f(d)+' ml'+(d2?'':'');var vol=''}
+const u=p.u;let ds=d2&&d2!==d?`${f(d)}–${f(d2)} ${u}`:`${f(d)} ${u}`;
+let vs=u==='ml'?'':(d2&&d2!==d?`${f(d/p.c)}–${f(d2/p.c)} ml`:`${f(d/p.c)} ml`);
+const qa=u==='ml'?d:d/p.c,qb=d2?(u==='ml'?d2:d2/p.c):null,qm=Math.max(qa,qb||0),ur=x=>x*100<1?'<1':Math.round(x*100);
+const ui=(typeof ped!=='undefined'&&ped&&qm<=1)?`<br>In UI (siringa da insulina 100 UI/ml): <b>≈${qb&&qb!==qa?ur(qa)+'–'+ur(qb):ur(qa)} UI</b>`:'';
+let gs='';if(p.g){const a=u==='ml'?d:d/p.c,b=d2?(u==='ml'?d2:d2/p.c):null;gs=b&&b!==a?`${Math.round(a*p.g)}–${Math.round(b*p.g)}`:`${Math.round(a*p.g)}`}
+const kk=p.f?'':` <span class="sm">(${f(p.k)}${p.k2?'–'+f(p.k2):''} ${u}/kg${p.mx?', max '+f(p.mx)+' '+u:''})</span>`;
+return `<div class="res"><b>${p.l}</b>${prep(p.d,u==='ml'?f(d)+(d2&&d2!==d?'–'+f(d2):'')+' ml':vs)}<div style="margin-top:5px">Dose: <b>${ds}</b>${kk}${vs?`<br>Volume: <b>${vs}</b> <span class="sm">a ${f(p.c)} ${u}/ml</span>`:''}${ui}${gs?`<br>Gocce: <b>≈${gs}</b>`:''}</div></div>`}
+const SK='shock elettrico defibrillazione cardioversione cve fv tv fa flutter tpsv';
+function shock(w,q){if(q&&!SK.includes(q))return'';
+let h='<div class="card"><h3>Shock elettrico (defibrillazione / cardioversione)</h3>';
+if(ped){if(!(w>0))return h+'<div class="sm">—</div></div>';
+const J=k=>f(Math.min(k*w,360))+' J';
+h+=`<div class="res"><b>Defibrillazione (FV/TV senza polso)</b><br>1° shock: <b>${J(2)}</b> <span class="sm">(2 J/kg)</span><br>2° shock: <b>${J(4)}</b> <span class="sm">(4 J/kg)</span><br>3° shock: <b>${J(6)}</b> <span class="sm">(6 J/kg)</span><br>4° shock: <b>${J(8)}</b> <span class="sm">(8 J/kg)</span><br><span class="sm">max 360 J (dose adulta)</span></div><div class="res"><b>Cardioversione sincronizzata (CVE)</b><br>1° shock: <b>${f(.5*w)}–${f(w)} J</b> <span class="sm">(0,5–1 J/kg)</span><br>Successivi: <b>${J(2)}</b> <span class="sm">(2 J/kg)</span></div>`}
+else{h+='<div class="res"><b>Defibrillazione (FV/TV senza polso)</b><br>1° shock: <b>150–200 J</b><br>Successivi: <b>200–360 J</b></div><div class="res"><b>Cardioversione sincronizzata (CVE)</b><br>TPSV / Flutter: <b>70–120 J</b><br>TV con polso: <b>120–150 J</b><br>FA: <b>massimo joule</b></div><div class="sm">Energie per defibrillatore bifasico.</div>'}
+return h+'</div>'}
+const nz=s=>s.replace(/\s\+\s(NaCl|G5%)\s+fino a\s+(\d+)\s*ml/g,(m,a,b)=>', portala a '+b+' ml'+(a==='NaCl'?'':' con '+a));
+const exb=e=>{const it=e.split('<br>').flatMap(q=>q.split(/(?<=\.)\s+(?=[A-ZÈ0-9])/)).filter(Boolean);return`<div class="res"><b>Esempio 70 kg</b><div class="st" style="padding-left:0">${it.map(t=>`<div style="margin-top:3px">${t}</div>`).join('')}</div></div>`};
+function render(){
+const w=parseFloat($('w').value),q=$('q').value.toLowerCase();let h='';
+if(tab===2){inf();return}
+if(tab===3){par();return}
+if(tab===4){alg();return}
+if(ped&&!(w>0))h='<div class="warn">Inserire il peso del paziente (kg) per i calcoli pediatrici.</div>';
+h+=shock(w,q);
+D.filter(x=>x.n.toLowerCase().includes(q)).forEach(x=>{
+h+=`<div class="card"><h3>${x.n}</h3>`;
+if(ped){h+=w>0?x.p.map(p=>line(p,w)).join(''):'<div class="sm">—</div>'}
+else{const ap=AP.find(k=>x.n.startsWith(k[0])),wa=70;h+=(ap?ap[1].map(p=>line(p,wa)).join(''):'')+'<ul>'+x.a.map(t=>`<li>${t}</li>`).join('')+'</ul>'+exb(x.e)}
+h+='</div>'});
+$('out').innerHTML=nz(h)}
+const P={adr:['Adrenalina','mcg/kg/min',.05,.5,1,20],nor:['Noradrenalina','mcg/kg/min',.05,.5,2,20],nit:['Nitroglicerina','mcg/min',10,200,5,20],ura:['Urapidil','mg/h',9,30,50,20],dop:['Dopamina','mcg/kg/min',2,20,80,20]};
+function inf(){
+const w=ped?(parseFloat($('w').value)||0):70,s=window.sel||'adr',p=P[s];
+$('out').innerHTML=nz(`<div class="card"><h3>Calcolatore infusione (pompa a siringa)</h3>
+<div class="row"><select id="ds">${Object.keys(P).map(k=>`<option value="${k}" ${k===s?'selected':''}>${P[k][0]}</option>`).join('')}</select></div>
+<div class="row" style="margin-top:6px"><label>Farmaco in siringa <input id="mg" type="number" step="any" value="${window.mg??p[4]}"> mg</label><label>Volume totale <input id="vt" type="number" step="any" value="${window.vt??p[5]}"> ml</label></div>
+<div class="res" id="ir"></div><div class="sm">Peso usato: ${w?w+' kg':'<b>inserire il peso in alto (necessario per mcg/kg/min)</b>'}. Diluire in NaCl 0,9% (o G5%). Usare siringa dedicata e via sicura.</div></div>
+<div class="card"><h3>Riferimenti</h3><ul class="sm"><li>Adrenalina: 1 fiala (1 mg) + NaCl fino a 20 ml = 50 mcg/ml (adulto)</li><li>Noradrenalina: 1 fiala (2 mg) + NaCl fino a 20 ml = 100 mcg/ml; per boli: 1 ml di questa + NaCl fino a 10 ml = 10 mcg/ml</li><li>Nitroglicerina: 1 fiala (5 mg/1,5 ml) + NaCl fino a 20 ml = 250 mcg/ml somministra 10 mcg/min = 2,4 ml/h</li><li>Dopamina: 2 ml di fiala (80 mg) + NaCl fino a 20 ml = 4 mg/ml</li><li>Urapidil: 1 fiala (50 mg) + NaCl fino a 20 ml = 2,5 mg/ml</li><li>Pediatrico: preparare con concentrazione tale da avere velocità ≥1 ml/h (es. adrenalina 0,12 mg/kg in 20 ml: 1 ml/h = 0,1 mcg/kg/min)</li></ul></div>`);
+$('ds').onchange=e=>{window.sel=e.target.value;window.mg=window.vt=undefined;inf()};
+const calc=()=>{window.mg=$('mg').value;window.vt=$('vt').value;const mg=+$('mg').value,vt=+$('vt').value;if(!mg||!vt){$('ir').innerHTML='—';return}
+const c=p[1]==='mg/h'?mg/vt:mg*1000/vt,cu=p[1]==='mg/h'?'mg/ml':'mcg/ml';
+const ds=[];const a=p[2],b=p[3];[a,a*2,a*4,b/2,b].forEach(x=>ds.push(+(x.toPrecision(2))));
+const ml=d=>p[1]==='mcg/kg/min'?d*w*60/c:p[1]==='mcg/min'?d*60/c:d/c;
+$('ir').innerHTML=`Concentrazione: <b>${f(c)} ${cu}</b><table><tr><th>Dose (${p[1]})</th><th>ml/h</th></tr>${[...new Set(ds)].map(d=>`<tr><td>${d}</td><td><b>${p[1]==='mcg/kg/min'&&!w?'—':f(ml(d))}</b></td></tr>`).join('')}</table>`};
+$('mg').oninput=$('vt').oninput=calc;calc()}
+$('mA').onclick=()=>{ped=false;$('mA').classList.add('on');$('mP').classList.remove('on');$('wl').style.display='none';$('w').value='';render()};
+$('mP').onclick=()=>{ped=true;$('mP').classList.add('on');$('mA').classList.remove('on');$('wl').style.display='';$('w').value='';$('w').placeholder='kg';render()};
+const HB=[['Neonato (&lt;28 gg)','100–205','30–53'],['Lattante (1–12 mesi)','100–190','30–53'],['1–2 anni','98–140','22–37'],['3–5 anni','80–120','20–28'],['6–11 anni','75–118','18–25'],['12–15 anni','60–100','12–20'],['≥16 anni (adulto)','60–100','12–20']];
+const BB=[['Neonato (96 h)','67–76','35–53'],['Lattante (1–12 mesi)','72–104','37–56'],['1–2 anni','86–106','42–63'],['3–5 anni','89–112','46–72'],['6–9 anni','97–115','57–76'],['10–11 anni','102–120','61–80'],['12–15 anni','110–131','64–83'],['≥16 anni (adulto)','—','—']];
+function par(){
+const v=parseFloat($('ag').value),u=$('au').value;let h='',i=-1,j=-1;
+const T=(a,hl)=>a.map((r,n)=>`<tr${n===hl?' style="background:rgba(21,101,192,.14);font-weight:600"':''}>${r.map((c,m)=>`<td${m?'':' style="text-align:left"'}>${c}</td>`).join('')}</tr>`).join('');
+if(v>=0&&v<=120){
+const d=u==='g'?v:u==='m'?v*30.4375:v*365.25,y=d/365.25;
+i=d<28?0:y<1?1:y<3?2:y<6?3:y<12?4:y<16?5:6;
+j=d<28?0:y<1?1:y<3?2:y<6?3:y<10?4:y<12?5:y<16?6:7;
+const lab=String(v).replace('.',',')+' '+{g:'giorni',m:'mesi',a:'anni'}[u];
+const pa=j===7?'<span class="sm">Non riportata: oltre le tabelle PALS</span>':`PAS: <b>${BB[j][1]}</b> mmHg<br>PAD: <b>${BB[j][2]}</b> mmHg`;
+h+=`<div class="card"><h3>Parametri attesi – ${lab}</h3><div class="sm">Fascia FC/FR: ${HB[i][0]} · fascia PA: ${BB[j][0]}</div><div class="res"><b>Frequenza cardiaca</b><br><b>${HB[i][1]}</b> /min</div><div class="res"><b>Frequenza respiratoria</b><br><b>${HB[i][2]}</b> atti/min</div><div class="res"><b>Pressione arteriosa</b><br>${pa}</div></div>`}
+else h+='<div class="warn">Inserire l’età del paziente.</div>';
+h+=`<div class="card"><h3>Tabella FC e FR</h3><table style="font-size:12.5px"><tr><th style="text-align:left">Età</th><th>FC</th><th>FR</th></tr>${T(HB,i)}</table></div><div class="card"><h3>Tabella pressione (mmHg)</h3><table style="font-size:12.5px"><tr><th style="text-align:left">Età</th><th>PAS</th><th>PAD</th></tr>${T(BB,j)}</table></div><div class="sm">Fonte: AHA PALS 2020. FC e FR aumentano con febbre, dolore, agitazione: valutare sempre il quadro clinico. PA a 50° percentile di altezza dopo il 1° anno. Il 12° anno compare in due fasce nella fonte: qui usata la fascia adolescente. Oltre i 15 anni sono riportati valori adulti, non PALS.</div>`;
+$('out').innerHTML=h}
+/* ===== TAB ALGORITMI – ERC 2025 (traduzione IRC) ===== */
+const ALG=[];
+function A(id,t,cat,src,note,start,nodes){ALG.push({id,t,cat,src,note,start,nodes})}
+const TT='Contenuti dal testo ERC 2025 (traduzione IRC). ';
+const RR='Contenuti dal testo ERC 2025 (traduzione IRC); la figura dell’algoritmo non è leggibile da testo: struttura ricostruita, da confrontare con la figura. ';
+const ALS_=['Apri algoritmo ALS','@als'];
+
+/* ---------- ARRESTO CARDIACO ---------- */
+A('als','Arresto cardiaco – ALS adulto','Arresto cardiaco','R',RR+'(Cap. 5, Figura 2)','s',{
+s:['Arresto cardiaco riconosciuto',['Attivare il team di rianimazione (in ospedale: 2222) e iniziare RCP 30:2','Collegare defibrillatore/monitor: placche antero-laterali (apicale sotto l’ascella, linea medio-ascellare)','Defibrillatore manuale solo se si riconosce il ritmo entro 5 s; altrimenti modalità DAE','Ossigeno alla massima concentrazione, ventilazioni efficaci'],[['Analisi del ritmo','r']]],
+r:['Analisi del ritmo (pausa < 5 s)',['Il conteggio di shock e farmaci è cumulativo, anche se il ritmo alterna tra defibrillabile e non','FV di qualsiasi ampiezza, anche fine: shock. Se non si distingue entro 5 s: modalità DAE','Con segni di ROSC (coscienza, movimenti finalizzati, onda arteriosa, aumento netto di ETCO₂) valutare il polso'],[['FV / TV senza polso (defibrillabile)','fv1'],['Asistolia / PEA (non defibrillabile)','nf'],['Segni di ROSC','rosc'],['Durante la RCP: vie aeree, accessi, monitoraggio','dur'],['Cause reversibili (4I e 4T)','cau']]],
+fv1:['1° shock',['≥ 150 J bifasico (130–150 J se bifasico pulsato); se energie ignote: massima energia disponibile','Shock singolo, poi subito RCP per 2 minuti','Continuare le compressioni durante la carica; pausa peri-shock < 5 s','Fino a 3 shock consecutivi solo se FV/TV testimoniata e monitorata con defibrillatore immediato (sala di emodinamica, area intensiva): contano come un solo shock per adrenalina e amiodarone'],[['Dopo 2 min: ancora FV/TV','fv2'],['Dopo 2 min: asistolia / PEA','nf'],['ROSC','rosc']]],
+fv2:['2° shock',['Shock ≥ 150 J, aumentando l’energia se possibile','RCP per 2 minuti subito dopo lo shock'],[['Dopo 2 min: ancora FV/TV','fv3'],['Dopo 2 min: asistolia / PEA','nf'],['ROSC','rosc']]],
+fv3:['3° shock + farmaci',['Shock, poi durante la RCP: adrenalina 1 mg EV/IO','Amiodarone 300 mg EV/IO (2 fiale pure, 6 ml) + flush; alternativa se amiodarone non disponibile: lidocaina 100 mg','FV refrattaria (persistente dopo 3 shock): verificare la posizione antero-laterale e considerare cambio di vettore (antero-posteriore); preparare un nuovo set di placche','Doppia defibrillazione sequenziale: non raccomandata di routine'],[['Dopo 2 min: ancora FV/TV','fv4'],['Dopo 2 min: asistolia / PEA','nf'],['ROSC','rosc']]],
+fv4:['4° shock',['Ripetere adrenalina 1 mg ogni 3–5 min (circa ogni 2 cicli)','RCP per 2 minuti'],[['Dopo 2 min: ancora FV/TV','fv5'],['Dopo 2 min: asistolia / PEA','nf'],['ROSC','rosc']]],
+fv5:['5° shock + amiodarone',['Shock, poi durante la RCP: amiodarone 150 mg EV/IO (1 fiala pura, 3 ml) se ancora FV/TV, anche se i ritmi defibrillabili sono intermittenti','Se si usa lidocaina: bolo aggiuntivo di 50 mg dopo 5 shock','Adrenalina 1 mg ogni 3–5 min'],[['Dopo 2 min: ancora FV/TV','fv6'],['Dopo 2 min: asistolia / PEA','nf'],['ROSC','rosc']]],
+fv6:['Shock successivi',['Proseguire shock ogni 2 min con RCP','Adrenalina 1 mg ogni 3–5 min','Cercare e trattare le cause reversibili; considerare ECPR dove disponibile'],[['Ancora FV/TV','fv6'],['Asistolia / PEA','nf'],['ROSC','rosc'],['Cause reversibili (4I e 4T)','cau']]],
+nf:['Ritmo non defibrillabile',['Adrenalina 1 mg EV/IO il prima possibile, poi ogni 3–5 min','RCP per 2 minuti','Asistolia: controllare l’ECG per onde P (più probabile risposta al pacing)','Dubbio tra asistolia e FV fine: erogare lo shock','Con ECG filtrato dagli artefatti che mostra asistolia non serve fermare le compressioni per l’analisi'],[['Dopo 2 min: rivalutare il ritmo','r'],['ROSC','rosc'],['Cause reversibili (4I e 4T)','cau']]],
+dur:['Durante la RCP',['Vie aeree: manovre di base, poi i-gel (preferito al tubo laringeo). Intubazione solo se operatore con successo > 95 % entro 2 tentativi, pausa < 5 s, conferma con capnografia a onda continua','Dopo SGA o tubo: 10 atti/min senza interrompere le compressioni; se perdita di gas con SGA: 30:2','Accesso: prima EV; se non ottenuto entro 2 tentativi passare a IO','Non somministrare di routine calcio, bicarbonato o corticosteroidi','Liquidi solo se la causa è ipovolemia','Compressioni meccaniche solo se le manuali non sono fattibili o sicure','Con monitoraggio avanzato: pressione diastolica ≥ 30 mmHg ed ETCO₂ ≥ 25 mmHg. Non interrompere la RCP per un ETCO₂ basso da solo','Coscienza durante la RCP: possibili basse dosi di fentanyl, ketamina e/o midazolam; mai miorilassanti da soli','Allontanare l’ossigeno ad almeno 1 m dal torace durante lo shock'],[['Torna all’analisi del ritmo','r']]],
+cau:['Cause reversibili (4I e 4T)',['Ipossia','Ipovolemia','Ipo/iperkaliemia e altri disturbi metabolici','Ipo/ipertermia','Tamponamento cardiaco','Tossici','Trombosi (coronarica o polmonare)','Pneumotorace iperteso (tensione)','Ecografia solo da operatori esperti, senza prolungare le pause: utile per tamponamento e pneumotorace. La sola dilatazione del ventricolo destro non basta per diagnosticare embolia polmonare'],[['Iperkaliemia','@iperk'],['Ipotermia accidentale','@ipoterm'],['Torna all’analisi del ritmo','r']]],
+rosc:['ROSC',['Prima di fermarsi usare una combinazione di segni clinici e fisiologici','ECG a 12 derivazioni (ripeterlo se non conclusivo)','Tachiaritmia instabile subito dopo il ROSC: cardioversione sincronizzata','Trasferire a un centro per arresto cardiaco secondo protocolli locali'],[['Tachiaritmia post-ROSC','@tachi']],'end']
+});
+
+/* ---------- PERI-ARRESTO ---------- */
+A('tachi','Tachicardie','Peri-arresto','R','Ramo instabile dal testo ERC 2025 (IRC, Cap. 5). Ramo stabile ricostruito dall’algoritmo 2025 del Resuscitation Council UK (non è il testo ERC; la figura ERC non è leggibile): da confrontare. Dosi di diltiazem, verapamil e digossina dalla tabella AHA 2020; le altre dalle schede dell’app. ','s',{
+s:['Tachicardia con polso',['ABCDE, ossigeno se ipossia, monitor, accesso EV, ECG a 12 derivazioni','Segni avversi: shock, sincope, scompenso cardiaco, ischemia miocardica; oppure subito dopo ROSC','Non si applica alla tachicardia sinusale: trattare la causa'],[['Instabile (segni avversi)','i'],['Stabile','st']]],
+i:['Instabile: cardioversione sincronizzata',['Sedazione/analgesia se cosciente; sincronizzare sull’onda R','Energia (bifasico): FA = massima; flutter/TPSV = 70–120 J; TV con polso = 120–150 J; poi incrementi','Se non converte: amiodarone 300 mg (2 fiale) in sacca G5 % da 250 ml in 10–20 min, poi 900 mg/24 h, e ripetere la cardioversione. Alternativa: procainamide 10–15 mg/kg in 20 min','Se perde il polso: algoritmo ALS'],[ALS_],'end'],
+st:['Stabile: classificare',['Classificare per QRS (stretto < 0,12 s) e regolarità; consultare un esperto nel dubbio'],[['QRS stretto, regolare (TPSV / flutter)','sr'],['QRS stretto, irregolare (probabile FA)','fs'],['QRS largo, regolare (TV)','lr'],['QRS largo, irregolare','li']]],
+sr:['QRS stretto regolare',['1 · Manovre vagali','2 · Adenosina, solo senza pre-eccitazione: 6 mg (1 fiala pura, 2 ml) in bolo rapidissimo + flush 20 ml; se inefficace 12 mg (4 ml), poi 18 mg (6 ml)','3 · Se inefficace: verapamil 0,075–0,15 mg/kg EV in 2 min (70 kg: 5–10 mg) oppure metoprololo 2,5–5 mg EV in 2 min, ripetibile ogni 5 min, max 15 mg','4 · Se ancora inefficace: cardioversione sincronizzata 70–120 J'],[],'end'],
+fs:['QRS stretto irregolare: probabile FA',['Controllo della frequenza. FEVS > 40 %, una tra:','· metoprololo 2,5–5 mg EV in 2 min, ripetibile ogni 5 min, max 15 mg','· diltiazem 0,25 mg/kg EV in 2 min (70 kg: ≈ 17,5 mg), poi 5–10 mg/h','· verapamil 0,075–0,15 mg/kg EV in 2 min (70 kg: 5–10 mg)','· digossina 0,25 mg EV, ripetibile fino a 1,5 mg in 24 h','FEVS < 40 %: metoprololo alla minima dose efficace per FC < 110/min (2,5 mg EV in 2 min, poi titolare); aggiungere digossina 0,25 mg se necessario','Instabile con FEVS molto ridotta: amiodarone 300 mg in G5 % 250 ml in 20–60 min, poi 900 mg/24 h','Anticoagulazione se l’aritmia dura da oltre 24 h'],[],'end'],
+lr:['QRS largo regolare',['Trattare come TV (anche se il meccanismo è incerto)','Cardiopatia strutturale o danno miocardico incerto: cardioversione sincronizzata 120–150 J','Se il rischio di sedazione è alto: procainamide 10–15 mg/kg EV in 20 min, max 1 g (non tra i farmaci dell’app)','Se procainamide non disponibile o controindicata (scompenso grave, IMA acuto, insufficienza renale terminale): amiodarone 300 mg in G5 % 250 ml in 20–60 min, poi 900 mg/24 h'],[],'end'],
+li:['QRS largo irregolare',['FA con pre-eccitazione: procainamide 10–15 mg/kg EV in 20 min (max 1 g) oppure cardioversione sincronizzata a energia massima','TV polimorfa con QT lungo (torsione di punta): magnesio solfato 2 g EV in 10–20 min (2 fiale in NaCl 0,9 % 250 ml); senza polso 2 g in 1–2 min','Considerare isoprenalina o pacing temporaneo; evitare amiodarone'],[['Ipokaliemia','@ipok']],'end']
+});
+
+A('brady','Bradicardie','Peri-arresto','T',TT+'(Cap. 5).','s',{
+s:['Bradicardia',['ABCDE, ossigeno se ipossia, monitor, accesso EV, ECG a 12 derivazioni','Segni avversi: shock, sincope, scompenso cardiaco, ischemia miocardica','Senza segni avversi: monitorare e cercare la causa'],[['Segni avversi presenti','at']]],
+at:['Atropina',['Atropina 500 mcg EV/IO, ripetibile ogni 3–5 min fino a 3 mg','NON nel BAV di alto grado con QRS largo (inefficace)','NON nel trapianto cardiaco: usare aminofillina'],[['Inefficace o instabile','sl']],'end'],
+sl:['Seconda linea e pacing',['Isoprenalina 5 mcg/min oppure adrenalina 2–10 mcg/min (tab Infusioni)','Aminofillina 100–200 mg EV lenta in trapianto cardiaco o lesione midollare','Glucagone se causa beta-bloccanti o calcio-antagonisti','Pacing transvenoso precoce se instabile; transcutaneo come ponte; percussivo solo in attesa dell’attrezzatura','Asistolia: cercare onde P all’ECG (più probabile risposta al pacing)'],[],'end']
+});
+
+/* ---------- CAUSE SPECIALI ---------- */
+A('anaf','Anafilassi','Cause speciali','T',TT+'(Cap. 6, testo completo).','s',{
+s:['Sospetta anafilassi',['Problemi di vie aeree, respiro o circolo, con o senza alterazioni di cute e mucose; trigger comuni: alimenti, farmaci, veleno di imenotteri','Probabile se: esordio acuto con cute/mucose + compromissione respiratoria, oppure ipotensione/disfunzione d’organo, oppure sintomi GI severi; oppure ipotensione, broncospasmo o coinvolgimento laringeo dopo allergene noto, anche senza cute','In anestesia o ventilazione meccanica: aumento delle pressioni di ventilazione, espirio prolungato, calo della PA'],[['Primi provvedimenti','a1']]],
+a1:['Adrenalina IM subito',['Rimuovere o interrompere il trigger se immediatamente fattibile; non ritardare il trattamento','Paziente sdraiato con gambe sollevate; seduto con gambe estese se prevalgono vie aeree/respiro senza compromissione del circolo. Mai in piedi o seduto che cerca di alzarsi','ADRENALINA IM 0,5 mg (0,5 ml di fiala 1 mg/ml) nella faccia laterale della coscia','Ripetere dopo 3–5 min se non migliora','Antistaminici non devono ritardare l’adrenalina'],[['Non migliora / instabile','a2'],['Migliora','ok'],['Arresto cardiaco','ar']]],
+a2:['Circolo, ossigeno, fluidi',['Ossigeno 100 % a 15 L/min, poi titolare SpO₂ 94–98 %','Accesso EV/IO di grosso calibro appena data la prima adrenalina','Cristalloidi in bolo 10–20 mL/kg (70 kg: 700–1400 mL), ripetibili secondo risposta: possono servire grandi volumi','Ostruzione delle alte vie o broncospasmo: considerare adrenalina nebulizzata (come da scheda Adrenalina); l’assorbimento è minimo, non ritarda l’IM'],[['Ancora instabile / ambiente monitorato','a3'],['Migliora','ok'],['Arresto cardiaco','ar']]],
+a3:['Refrattaria',['Adrenalina EV in infusione, iniziando da 0,1 mcg/kg/min e titolando: solo personale addestrato e monitoraggio completo (vedi tab Infusioni)','Mancata risposta all’adrenalina: secondo vasoattivo (noradrenalina o vasopressina)','Antistaminici H1: sollievo cutaneo, inizio lento; la somministrazione EV rapida di quelli di prima generazione può causare o peggiorare l’ipotensione','Corticosteroidi: ERC non ne raccomanda l’uso routinario'],[['Arresto cardiaco','ar'],['Migliora','ok']]],
+ok:['Miglioramento',['Mantenere monitoraggio e accesso EV, rivalutare ABC','Ripetere adrenalina IM se i sintomi ricompaiono','Osservazione e invio in ospedale secondo protocollo locale'],[],'end'],
+ar:['Arresto da anafilassi',['Ritmo più frequente: PEA (94 % nelle serie perioperatorie)','ALS standard con adrenalina EV; correggere soprattutto ipovolemia e ipossia','Considerare ECPR nell’arresto refrattario dove disponibile'],[ALS_],'end']
+});
+
+A('iperk','Iperkaliemia','Cause speciali','R',RR+'(Cap. 6, Figura 2)','s',{
+s:['Sospetta iperkaliemia',['A rischio: insufficienza renale/dialisi, scompenso cardiaco, diabete, epatopatia cronica, ACE-inibitori/antialdosteronici','Segni: debolezza agli arti, paralisi flaccida, parestesie, aritmie','Confermare con test point-of-care (emogasanalisi)','ECG: onde T a tenda, PR > 0,2 s, onde P piatte/assenti, QRS > 0,12 s, onde sinusoidali, TV, bradicardia, arresto','Se la diagnosi è elettrocardiografica iniziare il trattamento senza attendere il laboratorio'],[['In arresto cardiaco','ar'],['Non in arresto','gr']]],
+gr:['Gravità',['Lieve 5,5–5,9; moderata 6,0–6,4; severa ≥ 6,5; estrema ≥ 9,0 mmol/L','Il trattamento della forma lieve esula dalle linee guida ERC'],[['Moderata/severa (K ≥ 6,0) o alterazioni ECG','tr'],['Lieve senza alterazioni ECG','li']]],
+li:['Iperkaliemia lieve',['Non trattata in queste linee guida: valutare la causa e i farmaci in corso, ricontrollare il K'],[],'end'],
+tr:['Trattamento (non in arresto)',['1 · Spostare il K nelle cellule: insulina solubile 10 UI EV + glucosio 25 g EV. Se glicemia iniziale < 126 mg/dL (7 mmol/L): proseguire glucosio 10 % a 50 mL/h per 5 ore. Controllare la glicemia (rischio ipoglicemia)','2 · In aggiunta, mai da solo: salbutamolo nebulizzato 10–20 mg','3 · Antagonizzare: calcio cloruro 10 % 10 mL EV se iperkaliemia grave con alterazioni ECG; registrare l’ECG prima e dopo','4 · Rimuovere: sodio zirconio ciclosilicato 10 g per os; dialisi se grave e refrattaria','Bicarbonato: sconsigliato di routine fuori dall’arresto','Insulina-glucosio e salbutamolo durano 4–6 ore: l’iperkaliemia può ricomparire'],[],'end'],
+ar:['Arresto cardiaco iperkaliemico',['ALS standard con RCP di alta qualità (ritmo più comune: PEA)','Calcio cloruro 10 % 10 mL EV + bicarbonato di sodio 50 mmol EV (= 50 mL di 8,4 %), su linee separate o con flush tra le due somministrazioni','Considerare ECPR secondo protocolli locali; dialisi nei casi refrattari'],[ALS_],'end']
+});
+
+A('ipok','Ipokaliemia','Cause speciali','R',RR+'(Cap. 6, Figura 4)','s',{
+s:['Ipokaliemia',['K < 3,5 mmol/L: lieve 3,0–3,4; moderata 2,5–2,9; severa < 2,5 o sintomatica','Trattamento guidato da gravità, sintomi e alterazioni ECG','Reintegro lento preferibile; in emergenza reintegro EV rapido, preferibilmente da accesso centrale','Obiettivo K 4 mmol/L; correggere sempre l’eventuale ipomagnesiemia','Grave insufficienza renale: chiedere parere esperto'],[['Arresto da ipokaliemia','ar'],['Torsione di punta','tdp']]],
+ar:['Arresto da ipokaliemia',['Cloruro di potassio 20 mmol EV in 2–3 min, poi 10 mmol in 2 min','Monitorare il K e regolare l’infusione'],[ALS_],'end'],
+tdp:['Torsione di punta',['Magnesio solfato 2 g EV in 1–2 min (2 fiale da 1 g/10 mL)'],[],'end']
+});
+
+A('camg','Disturbi di calcio e magnesio','Cause speciali','T',TT+'(Cap. 6, Tabella 2).','s',{
+s:['Disturbo elettrolitico',['Scegliere il disturbo sospettato'],[['Ipercalcemia (Ca > 2,6 mmol/L)','hc'],['Ipocalcemia (Ca < 2,1 mmol/L)','lc'],['Ipermagnesemia (Mg > 1,1 mmol/L)','hm'],['Ipomagnesemia (Mg < 0,6 mmol/L)','lm']]],
+hc:['Ipercalcemia',['Cause: iperparatiroidismo, neoplasie, sarcoidosi, farmaci','Quadro: confusione, debolezza, dolore addominale, ipotensione, aritmie; ECG: QT corto, QRS allargato, T piatte, blocco AV','Trattare la causa; espansione volemica EV','Furosemide 1 mg/kg EV','Idrocortisone 200–300 mg EV','Pamidronato 30–90 mg EV'],[],'end'],
+lc:['Ipocalcemia',['Cause: IRC, pancreatite acuta, overdose da calcio-antagonisti, shock tossico, rabdomiolisi, lisi tumorale, trasfusioni massive','Quadro: parestesie, tetania, convulsioni, blocco AV; ECG: QT lungo, T invertite','Bolo: calcio gluconato 10 % 10–20 mL EV in 5–10 min','Infusione: 100 mL di calcio gluconato 10 % in 1000 mL di NaCl 0,9 % o G5 % a 50 mL/h (monitorare il calcio ionizzato)','Se necessario magnesio solfato 50 % 1–2 g EV'],[],'end'],
+hm:['Ipermagnesemia',['Cause: insufficienza renale, iatrogena; trattare se Mg > 1,75 mmol/L','Quadro: confusione, paralisi flaccida, depressione respiratoria, ipotensione, blocco AV; ECG: PR e QT lunghi, T appuntite','Calcio gluconato 10 % 10–30 mL oppure calcio cloruro 10 % 5–10 mL EV, ripetibili','Diuresi salina: NaCl 0,9 % 150 mL/h + furosemide 1 mg/kg EV','Emodialisi se funzione renale compromessa o sintomi gravi','Supporto ventilatorio se necessario'],[],'end'],
+lm:['Ipomagnesemia',['Cause: perdite GI, poliuria, malnutrizione, alcolismo, malassorbimento','Quadro: tremore, atassia, nistagmo, convulsioni, aritmie (torsione di punta)','Grave o sintomatica: magnesio solfato 2 g EV in 15 min','Torsione di punta: 2 g EV in 1–2 min','Convulsioni: 2 g EV in 10 min'],[],'end']
+});
+
+A('ipoterm','Ipotermia accidentale','Cause speciali','R',RR+'(Cap. 6, Figure 6, 13, 14)','s',{
+s:['Sospetta ipotermia accidentale',['Temperatura centrale con termometro per basse temperature: timpanica (respiro spontaneo) o esofagea (tubo/SGA)','Se non misurabile: stadiazione svizzera in base alla coscienza (AVPU/GCS)','Segni vitali: controllare fino a 1 minuto (clinica, ECG, ecografia)','Proteggere dal freddo: isolamento termico, ridurre l’esposizione','Asfissia, intossicazione, trauma o edema cerebrale d’alta quota possono far sovrastimare il rischio di arresto'],[['Vigile (GCS 15), 35–32 °C: stadio I','h1'],['Coscienza compromessa (GCS 9–14), < 32–28 °C: stadio II','h2'],['Incosciente (GCS < 9) con segni vitali, < 28 °C: stadio III','h3'],['Nessun segno vitale: stadio IV','h4']]],
+h1:['Stadio I (lieve)',['Il brivido di solito indica T > 30 °C: arresto ipotermico improbabile','Isolamento termico; riscaldamento con ambiente caldo, pacchetti riscaldanti o aria calda forzata, liquidi EV riscaldati 38–42 °C','Cautela se bradicardia, bradipnea o ipotensione: possibile passaggio a stadio a più alto rischio','Trasferire all’ospedale appropriato più vicino'],[],'end'],
+h2:['Stadio II (moderato)',['Isolamento, riscaldamento come sopra (poco pratico per trasporti < 1 ora) e trasferimento rapido','Instabilità cardiocircolatoria (FC < 45/min, PAS < 90 mmHg, aritmie ventricolari, T centrale < 30 °C): riscaldamento in ospedale con tecniche minimamente invasive; consulto precoce del centro ECMO'],[['Instabile: centro ECLS','ecls']],'end'],
+h3:['Stadio III (severo)',['Alto rischio di arresto (aumenta sotto i 30 °C): trasferire direttamente a un centro con ECLS','Supporto extracorporeo primario se in deterioramento: ETCO₂ < 10 mmHg o PAS ≤ 60 mmHg, pressione in calo, acidosi in aumento'],[['Centro ECLS','ecls'],['Se evolve in arresto','h4']],'end'],
+h4:['Stadio IV: arresto ipotermico',['Lesioni incompatibili con la vita (decapitazione, transezione del tronco, corpo decomposto o completamente congelato con torace non comprimibile): non rianimare','RCP continua con frequenze come ALS standard; mantenere la normossia','FV dopo 3 shock: ritardare ulteriori shock finché T centrale > 30 °C','Sotto 30 °C: adrenalina 1 mg una sola volta (salvo ECPR imminente); tra 30 e 35 °C: intervallo 6–10 min; ≥ 35 °C: protocolli standard','RCP meccanica se trasporto prolungato o terreno difficile','Amiodarone meno efficace; farmaci con cautela'],[['T < 28 °C e RCP continua pericolosa o impossibile','del'],['Trasporto e riscaldamento ECLS','ecls'],ALS_]],
+del:['RCP ritardata o intermittente',['Solo se T centrale < 28 °C','RCP ritardata quando la RCP è troppo pericolosa','RCP intermittente quando la continua non è possibile (soccorso tecnicamente complesso)','Preferire la RCP meccanica se il trasporto è lungo'],[['Trasporto e riscaldamento ECLS','ecls']],'end'],
+ecls:['Centro ECLS e riscaldamento',['Trasferire direttamente (iniziare se il centro è raggiungibile entro 6 ore)','Riscaldamento preferibilmente con VA-ECMO','Arresto non testimoniato e asistolia iniziale non sono controindicazioni','Prognosi con punteggio HOPE (non nei bambini)','Se ECLS non disponibile entro 6 ore: riscaldamento non extracorporeo','Fermata in ospedale intermedio per il K solo se lungo il percorso verso il centro ECLS'],[],'end']
+});
+
+A('aval','Soccorso in valanga','Cause speciali','R',RR+'(Cap. 6, Figure 7 e 15; ICAR MedCom 2023 per i rami con vie aeree ostruite).','s',{
+s:['Vittima di valanga disseppellita',['Segni di vita: AVPU A, V o P (GCS > 3), qualsiasi movimento, atti respiratori, polso carotideo/femorale (soccorritori ALS esperti)','★ La RCP si basa su: durata del seppellimento (cutoff 60 min), temperatura centrale (cutoff 30 °C), pervietà delle vie aeree'],[['Lesioni incompatibili con la vita','ln'],['Segni di vita presenti','sv'],['Nessun segno di vita','ns'],['Seppellimenti multipli, soli soccorritori BLS, pochi soccorritori','ava']]],
+ln:['Non iniziare la RCP',['Decapitazione, transezione del tronco, corpo completamente decomposto'],[],'stop'],
+sv:['Segni di vita presenti',['Trattare come ipotermia accidentale: stadiazione svizzera, isolamento, trasferimento'],[['Apri algoritmo ipotermia','@ipoterm']],'end'],
+ns:['Nessun segno di vita: vie aeree',['Valutare la pervietà delle vie aeree appena il volto è esposto','Ostruzione = naso e bocca completamente riempiti di neve compatta o detriti'],[['Vie aeree ostruite','ob'],['Vie aeree pervie o non note','pt']]],
+ob:['Vie aeree ostruite: seppellimento ≤ 60 o > 60 min',['★ Seppellimento ≤ 60 min: probabile asfissia o trauma, ALS standard','★ Seppellimento > 60 min con asistolia: non rianimare (ICAR 2023)','★ Seppellimento > 60 min con FV/PEA o arresto testimoniato: rianimare e trasportare con RCP in corso a un centro ECLS, salvo T centrale misurata ≥ 30 °C'],[['Sepolto ≤ 60 min, oppure T centrale ≥ 30 °C','asf'],['Sepolto > 60 min, asistolia','ln2'],['Sepolto > 60 min, FV/PEA o testimoniato','hyp']]],
+ln2:['Non rianimare',['Vie aeree ostruite, asistolia, sepolto > 60 min: non rianimare (ICAR MedCom 2023, raccomandazione 1A)'],[],'stop'],
+pt:['Vie aeree pervie o non note: temperatura e durata',['Misurare la temperatura centrale (timpanica o esofagea) appena possibile','★ Cutoff: temperatura centrale 30 °C e durata del seppellimento 60 min'],[['T < 30 °C, oppure sepolto > 60 min con T non misurabile','hyp'],['T ≥ 30 °C, oppure sepolto ≤ 60 min','asf'],['T non misurabile, sepolto < 60 min, raffreddamento rapido plausibile (a discrezione)','hyp']]],
+asf:['Arresto da asfissia o trauma',['ALS standard come nel paziente normotermico; considerare il trauma come causa','ECLS non indicato','Vie aeree ostruite con T ≥ 30 °C: interrompere se non c’è ROSC entro 30 min'],[ALS_],'end'],
+hyp:['Arresto probabilmente ipotermico',['RCP con rapporto standard; dosi dei farmaci e shock in base alla T centrale o, se non disponibile, alla durata del seppellimento','FV dopo 3 shock: ritardare ulteriori shock finché T centrale > 30 °C','T < 28 °C e salvataggio pericoloso: RCP ritardata; se il trasporto è difficile: RCP intermittente','Considerare RCP meccanica nei soccorsi lunghi e difficili','Trasportare con RCP in corso a un centro ECLS','Prognosi in ospedale con punteggio HOPE; se c’è dubbio di asfissia usare l’opzione NON-ASPHYXIA','Se HOPE non determinabile: K < 7 mmol/L e T < 30 °C come indicazione al riscaldamento ECLS'],[['Algoritmo ipotermia','@ipoterm'],ALS_],'end'],
+ava:['Algoritmo AvaLife',['Per seppellimenti multipli con soli soccorritori BLS e numero insufficiente di soccorritori','Disseppellire per primi i sepolti a profondità < 1,5 m','Indica chi rianimare e per quanto tempo (il dettaglio è nella figura AvaLife)'],[],'end']
+});
+
+/* ---------- GRUPPI SPECIALI ---------- */
+/* ---------- AMBIENTI SPECIALI ---------- */
+/* ---------- INTOSSICAZIONI ---------- */
+A('opi','Oppiacei','Intossicazioni','R','Naloxone: StatPearls Opioid Toxicity (2025); arresto: AHA 2025 Parte 10.','s',{
+s:['Sospetta overdose da oppioidi',['Triade: coscienza ridotta, depressione respiratoria (anche 4–6 atti/min), miosi (non sempre)','Glicemia capillare, ECG, monitor; rimuovere cerotti o altre fonti','Non attendere esami: ventilare con pallone-maschera e ossigeno 100 % prima e durante il naloxone'],[['Depressione respiratoria con polso','n'],['Arresto cardiaco','ar'],['Sospetta co-ingestione di benzodiazepine','@bzd']]],
+n:['Naloxone',['Adulto: 0,4–1 mg EV, IM o intranasale (1 fiala = 0,4 mg/1 ml); ripetibile ogni 2–3 min','Consumatore cronico, per evitare l’astinenza: 0,04–0,4 mg EV lenti ogni 1–3 min, oppure 0,05–0,1 mg EV titolando','Accesso difficile: 2 mg IM o intranasale','Fentanil, metadone e altri oppioidi sintetici: dosi più alte, 2 mg ogni 3–4 min fino a 10 mg totali; se nessuna risposta a 10 mg rivalutare la diagnosi','Bambino: 0,1 mg/kg, ripetibile ogni 3–4 min, max 10 mg','Obiettivo: respiro adeguato, non risveglio completo'],[['Nessuna risposta','nr'],['Risponde','os']]],
+nr:['Nessuna risposta',['Intubazione se il distress respiratorio persiste','Rivalutare: altri depressori (alcol, benzodiazepine), ipoglicemia, causa neurologica','Propossifene: aritmie che il naloxone non corregge, trattare con bicarbonato di sodio'],[['Benzodiazepine','@bzd']],'end'],
+os:['Dopo la risposta',['Naloxone dura 90–180 min: gli oppioidi a lunga durata (metadone, rilascio prolungato) possono durare di più, rischio di nuova depressione respiratoria','Se servono dosi ripetute: infusione pari a 3/4 della dose che ha invertito la depressione, per ora','Osservazione e ricovero: 12–24 h dopo naloxone; 6–12 h se asintomatico da eroina con parametri stabili','Edema polmonare non cardiogeno: ventilazione a pressione positiva (CPAP/BiPAP), evitare i diuretici'],[],'end'],
+ar:['Arresto cardiaco',['RCP e ALS standard: ventilazione efficace prioritaria (ipossia e ipotensione)','Naloxone ragionevole se non interrompe la RCP di qualità','Non ritardare RCP né attivazione dei soccorsi per dare naloxone'],[ALS_],'end']
+});
+
+A('bzd','Benzodiazepine','Intossicazioni','R','Flumazenil: StatPearls (schema FDA); principi: StatPearls Benzodiazepine Toxicity e AHA 2025.','s',{
+s:['Intossicazione da benzodiazepine',['Sedazione, depressione respiratoria (rara da sole: più probabile con alcol e oppioidi)','Trattamento principale: supporto di vie aeree e ventilazione, intubazione se serve; liquidi EV se ipotensione','Glicemia, ECG, paracetamolo e salicilati se ingestione volontaria','Carbone attivo, dialisi e irrigazione intestinale non hanno ruolo','Se sospetta co-ingestione di oppioidi con depressione respiratoria: naloxone prima'],[['Valutare flumazenil','f'],['Oppioidi','@opi'],['Arresto cardiaco','ar']]],
+f:['Flumazenil: solo in casi selezionati',['Non di routine: nella maggior parte dei casi i rischi superano i benefici','Possibile in sedazione da benzodiazepine pure in paziente non abituato, senza controindicazioni','Adulto (0,1 mg/ml): 0,2 mg (2 ml) EV in 30 s; poi 0,3 mg (3 ml); poi 0,5 mg (5 ml) ogni minuto fino a 3 mg totali (max 5 mg)','Nessuna risposta a 5 mg: probabile che la sedazione non sia da benzodiazepine','Durata 19–50 min, emivita 54 min: nuova sedazione entro 1–2 h, osservare almeno 2 h','NO se: dipendenza cronica da benzodiazepine, convulsioni o epilessia in terapia, co-ingestione di triciclici o altri proconvulsivanti, aritmie'],[],'end'],
+ar:['Arresto cardiaco',['Flumazenil non ha alcun ruolo','RCP e ALS standard, cercare altre cause'],[ALS_],'end']
+});
+
+A('ad','Antidepressivi','Intossicazioni','R','Triciclici: StatPearls TCA Toxicity e AHA 2025; sindrome serotoninergica: tabella 4 ERC 2025.','s',{
+s:['Intossicazione da antidepressivi',['ECG precoce: QRS, QTc, onda R in aVR','Monitor continuo, accesso EV, glicemia','Triciclici: tossicità cardiaca e convulsioni; SSRI, SNRI e IMAO: sindrome serotoninergica'],[['Triciclici (QRS largo, convulsioni, ipotensione)','tca'],['SSRI, SNRI, IMAO (sindrome serotoninergica)','ser']]],
+tca:['Triciclici',['QRS > 100 ms: rischio di convulsioni; > 160 ms: aritmie letali; onda R > 3 mm in aVR: convulsioni e aritmie','Bicarbonato di sodio 8,4 % 1 mEq/kg EV in bolo (70 kg: 70 mEq = 70 ml = 7 fiale); ripetere fino a QRS < 100 ms e pH 7,50–7,55','Poi infusione: 150 mEq in 1 L di glucosata 5 % a 150–250 ml/h','Evitare Na > 155 mEq/L e pH > 7,55; correggere l’ipokaliemia','Convulsioni: benzodiazepine (midazolam, vedi scheda)','Ipotensione: liquidi e bicarbonato; poi noradrenalina','QTc > 500 ms o torsione di punta: magnesio solfato 2 g EV','Carbone attivo solo con vie aeree protette, meglio entro 2 h','Evitare: flumazenil, fisostigmina, antiaritmici di classe Ia, Ic, III','Refrattario: emulsione lipidica, ECLS','Asintomatico: monitor ed ECG per almeno 6 h'],[['Arresto cardiaco','tar']]],
+tar:['Arresto da triciclici',['RCP e ALS standard con bicarbonato di sodio EV','Considerare ECLS nello shock cardiogeno refrattario','Rianimazione prolungata'],[ALS_],'end'],
+ser:['Sindrome serotoninergica',['Sospendere i farmaci serotoninergici','Agitazione e rigidità: benzodiazepine (midazolam, vedi scheda)','Considerare clorpromazina','Ipertermia grave: raffreddamento attivo rapido (≥ 0,15 °C/min)'],[],'end']
+});
+
+A('cca','Calcio-antagonisti','Intossicazioni','R','StatPearls Calcium Channel Blocker Toxicity e AHA 2025.','s',{
+s:['Intossicazione da calcio-antagonisti',['Segni: bradicardia, blocco AV, ipotensione, shock, iperglicemia','ABC, accesso EV/IO, monitor ECG, glicemia','Decontaminazione non deve prevalere sulla rianimazione'],[['Instabile (shock, bradicardia)','t'],['Ingestione recente, paziente stabile','dec'],['Arresto cardiaco','ar']]],
+dec:['Decontaminazione',['Carbone attivo 1 g/kg entro 1–2 h (vie aeree protette); dosi ripetute 0,5 g/kg ogni 2–4 h se l’intestino funziona','Irrigazione intestinale totale in ingestioni massive o a rilascio prolungato; non se instabile o con ileo','Monitor ECG e pressione continui, consultare il centro antiveleni'],[['Si instabilizza','t']],'end'],
+t:['Calcio e supporto',['Calcio cloruro 10 % 10–20 ml EV (via centrale preferita) oppure calcio gluconato 10 % 30–60 ml EV (anche periferico); bolo ripetibile o infusione','Atropina 0,5–1 mg EV ogni 2–3 min, max 3 mg (efficacia limitata)','Fluidi con cautela'],[['Ipotensione persistente','ins']]],
+ins:['Insulina ad alte dosi (HIET)',['Insulina regolare 1 U/kg EV in bolo (70 kg: 70 U)','Poi infusione 1–10 U/kg/h, titolata sulla perfusione; iniziare precocemente','Glicemia ogni 10 min all’inizio, poi ogni 30–45 min; glucosio se glicemia < 200 mg/dL','Potassio se < 2,5 mEq/L; controllare ipoglicemia e ipokaliemia','Vasopressori in parallelo: noradrenalina (vasoplegia) o adrenalina (contrattilità e frequenza), vedi tab Infusioni'],[['Shock refrattario','ref']]],
+ref:['Shock refrattario',['Glucagone 3–5 mg EV lenti in 3–5 min; se nessuna risposta altri 5–10 mg (vomito, iperglicemia, tachifilassi)','ECLS (VA-ECMO) nello shock cardiogeno refrattario alla terapia','Emulsione lipidica e blu di metilene (1–2 mg/kg): efficacia incerta, solo casi selezionati o se ECLS non disponibile','Evitare il bicarbonato come terapia specifica'],[ALS_],'end'],
+ar:['Arresto cardiaco',['RCP e ALS standard','Calcio cloruro 10 % 10–20 ml EV','ECLS nell’arresto refrattario con causa reversibile'],[ALS_],'end']
+});
+
+/* ===== MOTORE ===== */
+const $a=id=>ALG.find(x=>x.id===id);
+function alg(){window.aId?algRun():algList()}
+function algList(){
+const cats=[...new Set(ALG.map(x=>x.cat))];
+$('out').innerHTML=`<input id="aq" placeholder="Cerca algoritmo…" style="width:100%;box-sizing:border-box;margin:6px 0" value="${window.aqv||''}"><div id="al"></div><div class="sm" style="margin-top:10px">Fonte: Linee Guida ERC 2025, traduzione Italian Resuscitation Council.</div>`;
+const f=()=>{const q=$('aq').value.toLowerCase();window.aqv=$('aq').value;let h='';
+cats.forEach(c=>{const l=ALG.filter(x=>x.cat===c&&x.t.toLowerCase().includes(q));if(l.length)h+=`<div class="cat">${c}</div>`+l.map(x=>`<button class="opt al" data-id="${x.id}">${x.t}</button>`).join('')});
+$('al').innerHTML=h||'<div class="sm">Nessun risultato</div>';
+document.querySelectorAll('.al').forEach(b=>b.onclick=()=>{window.aId=b.dataset.id;window.tr=[$a(b.dataset.id).start];window.vw='g';alg()})};
+$('aq').oninput=f;f()}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function algTree(a){
+const ord=[],kids={},tree={},seen={[a.start]:1},q=[a.start];
+while(q.length){const k=q.shift();ord.push(k);kids[k]=[];(a.nodes[k][2]||[]).forEach((o,i)=>{const t=o[1];if(t[0]!=='@'&&!seen[t]){seen[t]=1;tree[k+':'+i]=1;kids[k].push([t,o[0]]);q.push(t)}})}
+const num={};ord.forEach((k,i)=>num[k]=i+1);
+const card=k=>{const n=a.nodes[k],op=n[2]||[];
+const kind=n[3]==='stop'?'stop':n[3]==='end'?'end':op.length>1?'dec':'act';
+const chips=op.map((o,i)=>{if(tree[k+':'+i])return'';const t=o[1];
+return t[0]==='@'?`<div class="chip ext" data-alg="${t.slice(1)}">↗ ${esc(o[0])} <b>${esc($a(t.slice(1)).t)}</b></div>`:`<div class="chip" data-go="${t}">↻ ${esc(o[0])} <b>→ ${num[t]}. ${esc(a.nodes[t][0])}</b></div>`}).join('');
+const KEY=/\d[\d,.–-]*\s*(J|mg|mcg|µg|g|mL|ml|UI|U|mmol|mEq|fial[ae])\b|:\s*$|^★/;const hid=n[1].some(t=>!KEY.test(t));
+return`<div class="gnb ${kind}${hid?'':' nohid'}" id="gn-${k}"><div class="gh"><span class="gnum">${num[k]}</span><span class="gt">${n[0]}</span><span class="gx">▾</span></div><div class="gbody">${n[1].map(t=>`<div class="bl${KEY.test(t)?' k':''}">${t}</div>`).join('')}</div>${chips?`<div class="gchips">${chips}</div>`:''}</div>`};
+const build=(k,lab)=>`<li>${lab!==null?`<span class="dp"></span><span class="lb">${esc(lab.length>48?lab.slice(0,47)+'…':lab)}</span>`:''}${card(k)}${kids[k].length?`<ul>${kids[k].map(([t,l])=>build(t,l)).join('')}</ul>`:''}</li>`;
+return`<div class="gwrap"><div class="tree"><ul>${build(a.start,null)}</ul></div></div><div class="sm" style="margin-top:6px">Joule e dosi dei farmaci sono sempre visibili in grassetto; tocca un riquadro per le altre informazioni. <b style="color:var(--pe)">Blu</b> = azione, <b style="color:#f9a825">giallo</b> = scelta, <b style="color:#2e7d32">verde</b> = fine percorso, <b style="color:var(--ac)">rosso</b> = stop. Le righe «↻ … → n.» rimandano a un riquadro già disegnato (toccale per andarci); «↗» apre un altro algoritmo.</div>`}
+function algRun(){
+const a=$a(aId);
+let h=`<div class="row"><button id="ab">← Elenco</button></div><div class="row" style="margin-top:8px"><button id="ax">Espandi tutto</button></div>
+<h3 style="margin:10px 0 2px">${a.t}</h3>`;
+h+=algTree(a);
+$('out').innerHTML=h;
+$('ab').onclick=()=>{window.aId=null;alg()};
+if($('ax'))$('ax').onclick=()=>{const all=[...document.querySelectorAll('.gnb')],open=all.every(x=>x.classList.contains('open'));all.forEach(x=>x.classList.toggle('open',!open));$('ax').textContent=open?'Espandi tutto':'Comprimi tutto'};
+document.querySelectorAll('.gh').forEach(g=>g.onclick=()=>g.parentNode.classList.toggle('open'));
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{if(c.dataset.alg){window.aId=c.dataset.alg;window.vw='g';alg();window.scrollTo(0,0)}else{const el=document.getElementById('gn-'+c.dataset.go);if(el){el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1400)}}})}
+
+const setTab=n=>{tab=n;['t1','t2','t3','t4'].forEach((k,x)=>$(k).classList.toggle('on',x+1===n));$('q').style.display=n===1?'':'none';$('mr').style.display=n>=3?'none':'';$('ar').style.display=n===3?'':'none';$('wl').style.display=(ped&&n<3)?'':'none';render()};
+$('t1').onclick=()=>setTab(1);$('t2').onclick=()=>setTab(2);$('t3').onclick=()=>setTab(3);$('t4').onclick=()=>setTab(4);
+$('ag').oninput=render;$('au').onchange=render;
+$('w').oninput=render;$('q').oninput=render;render();
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{const e=document.getElementById('offs');if(e)e.textContent='disponibile offline'}).catch(()=>{const e=document.getElementById('offs');if(e)e.textContent='offline non attivo'})}else{const e=document.getElementById('offs');if(e)e.textContent='offline non supportato'}
+</script></body></html>
